@@ -1,5 +1,5 @@
-#@PydevCodeAnalysisIgnore
-from flask import Flask
+#!flask/bin/python
+from flask import Flask  # @UnresolvedImport
 
 app = Flask(__name__)
 

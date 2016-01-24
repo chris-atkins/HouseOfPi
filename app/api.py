@@ -1,10 +1,11 @@
-from app import app
+#!flask/bin/python
+from app import app # @UnresolvedImport
 
 hiName = ''
 
 @app.route('/')
 def hello_world():
-    return 'Hi there!'
+    return 'Hi theres!'
 
 @app.route('/hi', methods=['POST'])
 def hiEndpoint():
