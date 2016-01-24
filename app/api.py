@@ -5,7 +5,7 @@ hiName = ''
 
 @app.route('/')
 def hello_world():
-    return 'Hi theres!'
+    return 'Hi there!'
 
 @app.route('/hi', methods=['POST'])
 def hiEndpoint():
