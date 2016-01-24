@@ -1,5 +1,8 @@
 #!/bin/sh
+echo 'this script assumes that the jenkins machine (or container) as easy_install and virtualenv already installed'
+echo 'to do this run the following commands on the jenkins box:'
+echo '        apt-get install python-setuptools'
+echo '        easy_install virtualenv'
 
-easy_install virtualenv
 virtualenv flask
 flask/bin/pip install flask
