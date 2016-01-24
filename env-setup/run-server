@@ -1,4 +1,4 @@
 #!/bin/sh
 
 chmod a+x ./run.py
-./run.py
+./run.py &
