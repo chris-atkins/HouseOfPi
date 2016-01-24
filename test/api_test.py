@@ -12,4 +12,4 @@ class MyTest(unittest.TestCase):
 
     def test_api_hello_world(self):
         response = api.hello_world()
-        self.assertEqual(response, "Hi theres!")
+        self.assertEqual(response, "Hi there!")
