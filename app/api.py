@@ -1,5 +1,8 @@
 #!flask/bin/python
 from app import app # @UnresolvedImport
+from flask import request
+import requests
+import os
 
 hiName = ''
 
@@ -9,8 +12,21 @@ def hello_world():
 
 @app.route('/hi', methods=['POST'])
 def hiEndpoint():
+    global hiName
+    
+    hiName = request.json.get('name')
     return 'ok'
     
 @app.route('/hi', methods=['GET'])
 def getHi():
+    print 'hiName: ' + hiName
     return 'Hi ' + hiName
+
+
+@app.route('/textMe', methods=['GET'])
+def textMe():
+    #     http://stackoverflow.com/questions/17301938/making-a-request-to-a-restful-api-using-python
+    url = 'https://poorknight.com/house/notify'
+    response = requests.get(url, verify=False)
+    
+    return response.text
