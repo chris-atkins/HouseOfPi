@@ -1,5 +1,5 @@
 #!env/bin/python
-from app import app # @UnresolvedImport
+from app import app 
 from flask import request
 import requests
 

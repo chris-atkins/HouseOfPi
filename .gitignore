@@ -1,4 +1,4 @@
-flask/
+env/
 *.pyc
 .cache
 nohup.out
