@@ -1,4 +1,4 @@
-#!flask/bin/python
+#!env/bin/python
 from flask import Flask  # @UnresolvedImport
 
 app = Flask(__name__)

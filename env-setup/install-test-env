@@ -1,4 +1,4 @@
 #!/bin/sh
 ./env-setup/install-server-env
 
-flask/bin/pip install pytest
+env/bin/pip install pytest

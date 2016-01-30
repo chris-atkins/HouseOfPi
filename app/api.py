@@ -1,8 +1,7 @@
-#!flask/bin/python
+#!env/bin/python
 from app import app # @UnresolvedImport
 from flask import request
 import requests
-import os
 
 hiName = ''
 
@@ -28,5 +27,5 @@ def textMe():
     #     http://stackoverflow.com/questions/17301938/making-a-request-to-a-restful-api-using-python
     url = 'https://poorknight.com/house/notify'
     response = requests.get(url, verify=False)
-    
+
     return response.text

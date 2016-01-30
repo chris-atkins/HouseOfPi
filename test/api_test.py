@@ -1,4 +1,4 @@
-#!flask/bin/python
+#!env/bin/python
 
 import unittest
 from app import api
@@ -7,6 +7,7 @@ def fun(x):
     return x + 1
 
 class MyTest(unittest.TestCase):
+    
     def test(self):
         self.assertEqual(fun(3), 4)
 
