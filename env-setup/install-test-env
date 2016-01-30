@@ -2,3 +2,4 @@
 ./env-setup/install-server-env
 
 env/bin/pip install pytest
+env/bin/pip install Flask-Testing

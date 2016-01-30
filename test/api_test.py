@@ -3,9 +3,6 @@
 import unittest
 from app import app
 
-def fun(x):
-    return x + 1
-
 class MyTestCase(unittest.TestCase):
     
     def setup_class(self):
