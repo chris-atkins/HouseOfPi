@@ -1,16 +1,17 @@
 #!env/bin/python
 
 import unittest
-from app import api
+from app import app
 
 def fun(x):
     return x + 1
 
-class MyTest(unittest.TestCase):
+class MyTestCase(unittest.TestCase):
     
-    def test(self):
-        self.assertEqual(fun(3), 4)
-
-    def test_api_hello_world(self):
-        response = api.hello_world()
-        self.assertEqual(response, "Hi there!")
+    def setup_class(self):
+        self.app = app.test_client();
+        
+    def test_client_directly(self):
+        response = self.app.get('/')
+        self.assertEqual(response.status, '200 OK')
+        self.assertEqual(response.data, 'Hi there!')
