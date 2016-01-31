@@ -10,19 +10,23 @@ app.config.update(dict(
 ))
 app.config.from_envvar('FLASKR_SETTINGS', silent=True)
 
-wasCalled = False
+notifyWasCalled = False
 
 @app.route('/', methods=['GET'])
-def show_entries():
-    global wasCalled
-    wasCalled = True
-    return "Hi"
+def server_is_up():
+    return 'Server is up'
 
-@app.route('/wasCalled', methods=['GET'])
+@app.route('/house/notify', methods=['GET'])
+def show_entries():
+    global notifyWasCalled
+    notifyWasCalled = True
+    return "Notify stub response"
+
+@app.route('/notifyWasCalled', methods=['GET'])
 def was_called():
-    global wasCalled
-    returnString = str(wasCalled)
-    wasCalled = False
+    global notifyWasCalled
+    returnString = str(notifyWasCalled)
+    notifyWasCalled = False
     return returnString
 
 
