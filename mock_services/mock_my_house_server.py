@@ -1,14 +1,13 @@
 #!env/bin/python
-import os
-from flask import Flask
+from flask import Flask  # @UnresolvedImport
 
 
 app = Flask(__name__)
-
 app.config.update(dict(
     DEBUG=True
 ))
 app.config.from_envvar('FLASKR_SETTINGS', silent=True)
+
 
 notifyWasCalled = False
 

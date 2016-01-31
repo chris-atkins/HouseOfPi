@@ -1,7 +1,7 @@
 #!env/bin/python
-from app import app 
-from flask import request
-import requests
+from app import app   # @UnresolvedImport
+from flask import request  # @UnresolvedImport
+import requests  # @UnresolvedImport
 
 hiName = ''
 

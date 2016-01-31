@@ -1,7 +1,7 @@
 #!env/bin/python
 
 import unittest
-from app import app
+from app import app  # @UnresolvedImport
 
 class MyTestCase(unittest.TestCase):
     

@@ -1,10 +1,9 @@
 #!env/bin/python
 
-from app import app
-from flask import Flask
-from flask.ext.testing import LiveServerTestCase
-import requests
-import threading
+from app import app  # @UnresolvedImport
+from flask.ext.testing import LiveServerTestCase  # @UnresolvedImport
+import requests  # @UnresolvedImport
+# import threading
 
 
 class MyTestCase(LiveServerTestCase):
