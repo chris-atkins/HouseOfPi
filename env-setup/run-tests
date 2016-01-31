@@ -9,7 +9,8 @@ else
     setsid ./env-setup/run-mock-my-house-server < /dev/zero &> mock-server-log.txt &
 fi
 
-
+echo 'running tests'
 env/bin/py.test ./test -s
 
+echo 'shutting down mock server'
 ./env-setup/stop-mock-my-house-server

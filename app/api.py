@@ -24,7 +24,7 @@ def getHi():
 @app.route('/textMe', methods=['GET'])
 def textMe():
     #     http://stackoverflow.com/questions/17301938/making-a-request-to-a-restful-api-using-python
-    url = 'https://poorknight.com/house/notify'
+    url = app.config.get('MY_HOUSE_URL') + '/house/notify'
     response = requests.get(url, verify=False)
 
     return response.text
