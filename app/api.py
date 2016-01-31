@@ -12,7 +12,6 @@ def hello_world():
 @app.route('/hi', methods=['POST'])
 def hiEndpoint():
     global hiName
-    
     hiName = request.json.get('name')
     return 'ok'
     

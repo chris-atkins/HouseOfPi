@@ -1,0 +1,4 @@
+#!/bin/sh
+
+chmod a+x ./mock_services/mock_my_house_server.py
+./mock_services/mock_my_house_server.py

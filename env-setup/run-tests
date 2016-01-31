@@ -1,3 +1,15 @@
 #!/bin/sh
 
+echo 'starting mock server'
+if [ "$(uname)" == "Darwin" ]; then
+	echo 'on Mac - running: ./env-setup/run-mock-my-house-server &'
+    ./env-setup/run-mock-my-house-server &
+else
+	echo 'on non-Mac - running: setsid ./env-setup/run-mock-my-house-server < /dev/zero &> mock-server-log.txt &'
+    setsid ./env-setup/run-mock-my-house-server < /dev/zero &> mock-server-log.txt &
+fi
+
+
 env/bin/py.test ./test -s
+
+./env-setup/stop-mock-my-house-server
