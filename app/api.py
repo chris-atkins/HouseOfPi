@@ -24,7 +24,8 @@ def getHi():
 @app.route('/textMe', methods=['GET'])
 def textMe():
     #     http://stackoverflow.com/questions/17301938/making-a-request-to-a-restful-api-using-python
-    url = app.config.get('MY_HOUSE_URL') + '/house/notify'
-    response = requests.get(url, verify=False)
-
-    return response.text
+    url = app.config.get('MY_HOUSE_URL') + '/house/notification'
+    postData = {"messageContent": "Raspberry Pi says hi and would like to inform you that it was asked to send you a message."}
+    
+    response = requests.post(url, json=postData, verify=False)
+    return response.json()['message']

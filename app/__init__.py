@@ -1,6 +1,6 @@
 #!env/bin/python
-from flask import Flask  
+from flask import Flask  # @UnresolvedImport
 
 app = Flask(__name__)
 
-from app import api
+from app import api  # @UnresolvedImport
