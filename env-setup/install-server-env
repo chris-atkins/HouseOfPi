@@ -1,10 +1,11 @@
 #!/bin/sh
 echo 'this script assumes that the jenkins machine (or container) has easy_install and virtualenv already installed'
 echo 'to do this run the following commands on the jenkins box:'
-echo '        apt-get install python-setuptools'
+echo '        apt-get install python-setuptools python-pip'
 echo '        easy_install virtualenv'
 
-virtualenv env --system-site-packages
+echo 'maybe try virtualenv env --system-site-packages'
+virtualenv env
 env/bin/pip install flask
 env/bin/pip install requests
 env/bin/pip install gpiocrust
