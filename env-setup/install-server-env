@@ -4,7 +4,7 @@ echo 'to do this run the following commands on the jenkins box:'
 echo '        apt-get install python-setuptools'
 echo '        easy_install virtualenv'
 
-virtualenv env
+virtualenv env --system-site-packages
 env/bin/pip install flask
 env/bin/pip install requests
 env/bin/pip install gpiocrust
