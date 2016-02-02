@@ -7,3 +7,4 @@ echo '        easy_install virtualenv'
 virtualenv env
 env/bin/pip install flask
 env/bin/pip install requests
+env/bin/pip install gpiocrust
