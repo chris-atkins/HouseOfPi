@@ -4,8 +4,11 @@ echo 'to do this run the following commands on the jenkins box:'
 echo '        apt-get install python-setuptools python-pip'
 echo '        easy_install virtualenv'
 
-echo 'maybe try virtualenv env --system-site-packages'
-python -mvirtualenv env --no-site-packages
+virtualenv env
 env/bin/pip install flask
 env/bin/pip install requests
 env/bin/pip install gpiocrust
+
+if [ "$(uname)" != "Darwin" ]; then
+	env/bin/pip install rpi.gpio
+fi
