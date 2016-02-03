@@ -5,7 +5,7 @@ echo '        apt-get install python-setuptools python-pip'
 echo '        easy_install virtualenv'
 
 echo 'maybe try virtualenv env --system-site-packages'
-virtualenv env
+python -mvirtualenv env --no-site-packages
 env/bin/pip install flask
 env/bin/pip install requests
 env/bin/pip install gpiocrust
