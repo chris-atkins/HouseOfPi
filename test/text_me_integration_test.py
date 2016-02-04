@@ -3,7 +3,6 @@
 import requests  # @UnresolvedImport
 from app import app  # @UnresolvedImport
 from flask.ext.testing import LiveServerTestCase  # @UnresolvedImport
-import json
 
 class TextMeIntegrationTestCase(LiveServerTestCase):
     
