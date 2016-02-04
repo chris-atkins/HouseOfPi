@@ -6,7 +6,7 @@ from app import app_status_display
 
 debugOn = os.environ.get('PYTHON_DEBUG_ON')
 
-app_status_display.display_on_for(1)
+app_status_display.start_server_on_display_every(5)
 
 app.config.update(dict(
     MY_HOUSE_URL='https://poorknight.com'
