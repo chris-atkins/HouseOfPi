@@ -9,14 +9,15 @@ with Header() as header:
     light.value = False
     
     def display_on_every(seconds):
+        waitTime = seconds - .25
         while True:
             light.value = True
-            time.sleep(.5)
+            time.sleep(.25)
             light.value = False
-            time.sleep(seconds - .5)
+            time.sleep(waitTime)
             
     def start_server_on_display_every(seconds):
-        t = threading.Thread(target=display_on_every, kwargs={'seconds':'5'})
+        t = threading.Thread(target=display_on_every, kwargs={'seconds': seconds})
         t.daemon = True
         t.start()    
         
