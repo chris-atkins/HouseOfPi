@@ -2,6 +2,8 @@
 from app import app   # @UnresolvedImport
 from flask import request  # @UnresolvedImport
 import requests  # @UnresolvedImport
+import os
+from flask import send_from_directory  # @UnresolvedImport
 
 hiName = ''
 
@@ -29,3 +31,7 @@ def textMe():
     
     response = requests.post(url, json=postData, verify=False)
     return response.json()['message']
+
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory(os.path.join(app.root_path, 'static'), 'favicon.ico', mimetype='image/vnd.microsoft.icon')
