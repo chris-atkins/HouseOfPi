@@ -31,3 +31,9 @@ class TextMeIntegrationTestCase(LiveServerTestCase):
     def test_text_me_returns_message_from_remote_server(self):
         response = requests.get(self.get_server_url() + '/textMe')
         self.assertEquals(response.text, 'Notify stub response')
+        
+    def test_favicon_works(self):
+        response = requests.get(self.get_server_url() + '/favicon.ico')
+        self.assertIsNotNone(response.content);
+        self.assertGreater(len(response.content), 255
+                           )
