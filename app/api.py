@@ -22,7 +22,6 @@ def getHi():
     print 'hiName: ' + hiName
     return 'Hi ' + hiName
 
-
 @app.route('/textMe', methods=['GET'])
 def textMe():
     #     http://stackoverflow.com/questions/17301938/making-a-request-to-a-restful-api-using-python
@@ -31,7 +30,6 @@ def textMe():
     
     response = requests.post(url, json=postData, verify=False)
     return response.json()['message']
-
 
 @app.route('/favicon.ico')
 def favicon():

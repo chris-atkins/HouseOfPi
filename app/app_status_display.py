@@ -1,6 +1,6 @@
 #!env/bin/python
 
-from gpiocrust import Header, OutputPin
+from gpiocrust import Header, OutputPin  # @UnresolvedImport
 import time
 import threading
 
