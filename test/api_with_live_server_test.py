@@ -1,6 +1,6 @@
 #!env/bin/python
 
-from app import app  # @UnresolvedImport
+from app.server import app  # @UnresolvedImport
 from flask.ext.testing import LiveServerTestCase  # @UnresolvedImport
 import requests  # @UnresolvedImport
 # import threading

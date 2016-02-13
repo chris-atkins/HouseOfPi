@@ -1,7 +1,7 @@
 #!env/bin/python
 
 import requests  # @UnresolvedImport
-from app import app  # @UnresolvedImport
+from app.server import app  # @UnresolvedImport
 from flask.ext.testing import LiveServerTestCase  # @UnresolvedImport
 
 class TextMeIntegrationTestCase(LiveServerTestCase):

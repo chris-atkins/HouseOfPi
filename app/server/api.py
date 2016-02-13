@@ -1,9 +1,8 @@
 #!env/bin/python
-from app import app   # @UnresolvedImport
-from flask import request  # @UnresolvedImport
+from app.server import app
+from flask import request, send_from_directory  # @UnresolvedImport
 import requests  # @UnresolvedImport
 import os
-from flask import send_from_directory  # @UnresolvedImport
 
 hiName = ''
 
