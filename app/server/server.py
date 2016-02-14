@@ -1,12 +1,11 @@
 #!env/bin/python
 from flask import Flask  # @UnresolvedImport
-from app.hardware.house_of_pi import HouseOfPi
 
 class Server(Flask):
 
-    def __init__(self, name):
+    def __init__(self, name, hardwareInterface):
         super(Server, self).__init__(name)
-        self.hardware = HouseOfPi()
+        self.hardware = hardwareInterface
 
     def run(self, host=None, port=None, debug=None, **options):
         super(Server, self).run(host = host, port = port, debug = debug, **options)
