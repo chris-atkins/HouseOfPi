@@ -20,7 +20,7 @@ def server_is_up():
 def show_entries():
     global lastNotifyRequest
     lastNotifyRequest = request.json
-    print str(lastNotifyRequest)
+    print(str(lastNotifyRequest))
     returnObject = {"message": "Notify stub response"}
     return json.dumps(returnObject)
 

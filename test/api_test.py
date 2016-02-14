@@ -11,4 +11,4 @@ class MyTestCase(unittest.TestCase):
     def test_client_directly(self):
         response = self.app.get('/')
         self.assertEqual(response.status, '200 OK')
-        self.assertEqual(response.data, 'Hi there!')
+        self.assertEqual(response.data, b'Hi there!')

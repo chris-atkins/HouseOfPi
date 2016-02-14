@@ -18,7 +18,7 @@ def hiEndpoint():
     
 @app.route('/hi', methods=['GET'])
 def getHi():
-    print 'hiName: ' + hiName
+    print('hiName: ' + hiName)
     return 'Hi ' + hiName
 
 @app.route('/textMe', methods=['GET'])
