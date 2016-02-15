@@ -1,12 +1,12 @@
 #!env/bin/python
 
 import unittest
-from app.server import app  # @UnresolvedImport
+from test_server_setup import buildTestServer
 
 class MyTestCase(unittest.TestCase):
     
     def setup_class(self):
-        self.app = app.test_client();
+        self.app = buildTestServer().test_client();
         
     def test_client_directly(self):
         response = self.app.get('/')

@@ -5,6 +5,7 @@ echo '        apt-get install python-setuptools python-pip'
 echo '        easy_install virtualenv'
 
 virtualenv -p python3 env
+env/bin/pip install --upgrade pip
 env/bin/pip install flask
 env/bin/pip install requests
 env/bin/pip install gpiocrust

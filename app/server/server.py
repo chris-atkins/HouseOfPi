@@ -9,4 +9,4 @@ class Server(Flask):
 
     def run(self, host=None, port=None, debug=None, **options):
         super(Server, self).run(host = host, port = port, debug = debug, **options)
-        self.hardwareInterface.start_displaying_on_state()
+        self.hardware.start_displaying_on_state()

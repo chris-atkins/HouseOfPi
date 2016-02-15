@@ -1,20 +1,14 @@
 #!env/bin/python
 
-import requests  # @UnresolvedImport
-from app.server import app  # @UnresolvedImport
+from test_server_setup import buildTestServer
+from test_server_setup import myHouseUrl
 from flask.ext.testing import LiveServerTestCase  # @UnresolvedImport
+import requests  # @UnresolvedImport
 
 class TextMeIntegrationTestCase(LiveServerTestCase):
     
-    global myHouseUrl
-    myHouseUrl = 'http://127.0.0.1:3333'
-    
     def create_app(self):
-        testApp = app
-        testApp.config['TESTING'] = True
-        testApp.config['LIVESERVER_PORT'] = 8945
-        testApp.config['MY_HOUSE_URL'] = myHouseUrl
-        return testApp
+        return buildTestServer()
     
     def test_mock_service_is_up(self):
         response = requests.get(myHouseUrl)
