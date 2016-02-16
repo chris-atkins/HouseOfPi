@@ -1,6 +1,5 @@
 #!env/bin/python
 from flask import Flask  # @UnresolvedImport
-from app.hardware import app_status_display
 
 class Server(Flask):
 
@@ -10,5 +9,4 @@ class Server(Flask):
 
     def run(self, host=None, port=None, debug=None, **options):
         self.hardware.start_displaying_on_state()
-        app_status_display.start_server_on_display_every(2)
         super(Server, self).run(host = host, port = port, debug = debug, **options)

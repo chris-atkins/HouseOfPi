@@ -14,11 +14,13 @@ class ServerOnLEDTest(LiveServerTestCase):
         gpio = self.load_tracked_gpio()
         self.assertTrue(gpio.setup_was_called_for_channel(11))
     
-#     def test_on_and_off_called_every_2_seconds(self):
-#         time.sleep(4.5)
-#         gpio = self.load_tracked_gpio()
-#         self.assertTrue(gpio.number_of_high_calls_for_channel(11) == 2)
-#         self.assertTrue(gpio.number_of_low_calls_for_channel(11) == 2)
+    def test_on_and_off_called_every_2_seconds(self):
+        time.sleep(4)
+        gpio = self.load_tracked_gpio()
+        print(gpio.number_of_high_calls_for_channel(11))
+        print(gpio.number_of_low_calls_for_channel(11))
+        self.assertTrue(gpio.number_of_high_calls_for_channel(11) >= 2)
+        self.assertTrue(gpio.number_of_low_calls_for_channel(11) >= 2)
     
     def load_tracked_gpio(self):
         with open('gpio.pickle', 'rb') as f:

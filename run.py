@@ -17,7 +17,6 @@ app.config.update(dict(
 
 initRoutes(app)
 
-
 if debugOn != None and (debugOn.lower() == 'true' or debugOn.lower() == 'yes'):
     app.run(debug=True, host='0.0.0.0')
 else:
