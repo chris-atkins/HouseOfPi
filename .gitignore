@@ -2,3 +2,4 @@ env/
 *.pyc
 .cache
 nohup.out
+gpio.pickle

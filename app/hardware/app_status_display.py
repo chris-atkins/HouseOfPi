@@ -21,3 +21,18 @@ with Header() as header:
         t.daemon = True
         t.start()    
         
+
+class TimedLEDDisplay(object):
+    
+    def __init__(self, GPIO, channel_in_board_scheme):
+        self.GPIO = GPIO
+        self.channel = channel_in_board_scheme
+        self.GPIO.setup(self.channel, self.GPIO.OUT)
+    
+    def start_led_display_every(self, seconds_per_cycle, seconds_led_is_on = .25):
+        try:
+            pass
+        finally:
+            self.GPIO.cleanup(self.channel)
+        
+        

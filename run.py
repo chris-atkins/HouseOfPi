@@ -4,10 +4,12 @@ from app.server.server import Server
 from app.server.api import initRoutes
 from app.hardware import app_status_display
 from app.hardware.house_of_pi import HouseOfPi
+from app.hardware.gpio_factory import GPIOFactory
 
 debugOn = os.environ.get('PYTHON_DEBUG_ON')
 
-hardware = HouseOfPi()
+gpioFactory = GPIOFactory()
+hardware = HouseOfPi(gpioFactory)
 app = Server(__name__, hardware)
 
 app.config.update(dict(
