@@ -2,7 +2,6 @@
 import os
 from app.server.server import Server
 from app.server.api import initRoutes
-from app.hardware import app_status_display
 from app.hardware.house_of_pi import HouseOfPi
 from app.hardware.gpio_factory import GPIOFactory
 
@@ -18,7 +17,6 @@ app.config.update(dict(
 
 initRoutes(app)
 
-app_status_display.start_server_on_display_every(2)
 
 if debugOn != None and (debugOn.lower() == 'true' or debugOn.lower() == 'yes'):
     app.run(debug=True, host='0.0.0.0')
