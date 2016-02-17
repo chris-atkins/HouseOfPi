@@ -19,10 +19,16 @@ class TestGPIO(object):
         self.channel_output_high_calls = {}
         self.channel_output_low_calls = {}
         self.setup_called_on_channel_list = []
+        self.set_pin_mode_called_value = 'NOT CALLED'
         self.OUT = 'OUT'
         self.IN = 'IN'
         self.HIGH = 'HIGH'
         self.LOW = 'LOW'
+        self.BCM = 'BCM'
+        self.BOARD = 'BOARD'
+    
+    def setmode(self, mode):
+        self.set_pin_mode_called_value = mode;
     
     def setup(self, channel, in_or_out):
         print('setup called for channel: ' + str(channel) + " as " + str(in_or_out))
@@ -59,6 +65,9 @@ class TestGPIO(object):
     
     def setup_was_called_for_channel(self, channel):
         return channel in self.setup_called_on_channel_list
+    
+    def gpio_pin_mode_setting(self):
+        return self.set_pin_mode_called_value
     
     def save_status(self):
         if self.should_save_status:

@@ -27,12 +27,14 @@ class GPIOFactory(object):
 
 class EmptyGPIO(object):
     
-#     global OUT, IN, HIGH, LOW
+#     global OUT, IN, HIGH, LOW 
     def __init__(self):
         self.OUT = 'OUT'
         self.IN = 'IN'
         self.HIGH = 'HIGH'
         self.LOW = 'LOW'
+        self.BCM = 'BCM'
+        self.BOARD = 'BOARD'
             
     def setup(self, channel, in_or_out):
         pass
@@ -41,5 +43,8 @@ class EmptyGPIO(object):
         pass
     
     def output(self, channel, high_or_low):
+        pass
+    
+    def setmode(self, mode):
         pass
     

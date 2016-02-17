@@ -7,6 +7,7 @@ class HouseOfPi(HardwareInterface):
     def __init__(self, gpio_factory):
         super(HouseOfPi, self).__init__()
         self.GPIO = gpio_factory.getGPIO()
+        self.GPIO.setmode(self.GPIO.BOARD)
         self.led_display_cycle_time = 2
         
     def start_displaying_on_state(self, channel_in_board_scheme=11):
