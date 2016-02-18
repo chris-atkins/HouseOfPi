@@ -1,9 +1,6 @@
 import pickle
 
 class TestGPIOFactory(object):
-    '''
-        strategy and comments lifted from the authors of gpiocrust (thanks, nice work! :) - https://github.com/zourtney/gpiocrust
-    '''
 
     def __init__(self, track_gpio_calls):
         self.gpio = TestGPIO(track_gpio_calls = track_gpio_calls)            

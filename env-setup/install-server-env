@@ -8,7 +8,6 @@ virtualenv -p python3 env
 env/bin/pip install --upgrade pip
 env/bin/pip install flask
 env/bin/pip install requests
-env/bin/pip install gpiocrust
 
 if [ "$(uname)" != "Darwin" ]; then
 	env/bin/pip install rpi.gpio
