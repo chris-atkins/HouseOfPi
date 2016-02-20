@@ -4,7 +4,6 @@ import requests  # @UnresolvedImport
 import os
 from app.server.utils.endpoints import listEndpoints
 
-
 def initRoutes(app):
     
     hiName = ''
@@ -28,6 +27,12 @@ def initRoutes(app):
     @app.route('/endpoints', methods=['GET'])
     def listEndpoints():
         return str(listEndpoints(app))
+    
+    @app.route('/wink', methods=['GET'])
+    def  winkEndpoint():
+        print('wink')
+        app.hardware.blink_n_times_in_time(blink_times=20, seconds=2)
+        return ';)'
     
     @app.route('/textMe', methods=['GET'])
     def textMe():
