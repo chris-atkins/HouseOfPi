@@ -1,14 +1,13 @@
 #!env/bin/python
-
+import unittest
 from test_server_setup import buildTestServer
-from flask.ext.testing import LiveServerTestCase  # @UnresolvedImport
-import test.helper as testHelper
+from mock_services.test_gpio import GPIOTestFactory
 
-class GpioInitializationTest(LiveServerTestCase):
-    
-    def create_app(self):
-        return buildTestServer(track_gpio_calls = True)
-    
+class GpioInitializationTest(unittest.TestCase):
+
+    def setup_class(self):
+        self.gpioFactory = GPIOTestFactory(track_gpio_calls = True)
+        self.app = buildTestServer(gpioFactory=self.gpioFactory).test_client();
+
     def test_gpio_pin_scheme_set(self):
-        gpio = testHelper.load_tracked_gpio();
-        self.assertEqual(gpio.gpio_pin_mode_setting(),  'BOARD')
+        self.assertEqual(self.gpioFactory.getGPIO().gpio_pin_mode_setting(),  'BOARD')

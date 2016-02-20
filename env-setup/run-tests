@@ -10,7 +10,7 @@ else
 fi
 
 echo 'running tests'
-env/bin/py.test ./test -s
+env/bin/py.test ./test -srw
 
 echo 'shutting down mock server'
 ./env-setup/stop-mock-my-house-server

@@ -1,9 +1,9 @@
 import pickle
 
-class TestGPIOFactory(object):
+class GPIOTestFactory(object):
 
     def __init__(self, track_gpio_calls):
-        self.gpio = TestGPIO(track_gpio_calls = track_gpio_calls)            
+        self.gpio = TestGPIO(track_gpio_calls=track_gpio_calls)            
             
     def getGPIO(self):
         return self.gpio
@@ -71,4 +71,3 @@ class TestGPIO(object):
             print('saving gpio status')
             with open('gpio.pickle', 'wb') as f:
                 pickle.dump(self, f)
-        

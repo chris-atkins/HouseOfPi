@@ -8,5 +8,8 @@ class Server(Flask):
         self.hardware = hardwareInterface
 
     def run(self, host=None, port=None, debug=None, **options):
-        self.hardware.start_displaying_on_state()
+        self.init_hardware()
         super(Server, self).run(host = host, port = port, debug = debug, **options)
+        
+    def init_hardware(self):
+        self.hardware.start_displaying_on_state()
