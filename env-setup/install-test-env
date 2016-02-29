@@ -3,3 +3,4 @@
 
 env/bin/pip install pytest
 env/bin/pip install Flask-Testing
+env/bin/pip install mock
