@@ -4,9 +4,9 @@ import threading
 
 class TimedLEDDisplay(object):
 
-    def __init__(self, GPIO, channel_in_board_scheme):
+    def __init__(self, GPIO, channel):
         self.GPIO = GPIO
-        self.channel = channel_in_board_scheme
+        self.channel = channel
 
     def start_led_display_every(self, seconds_per_cycle, seconds_led_is_on = .25):
         t = threading.Thread(target=self.display_on_every, kwargs={'seconds_per_cycle': seconds_per_cycle, 'seconds_led_is_on': seconds_led_is_on})

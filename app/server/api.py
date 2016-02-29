@@ -30,8 +30,7 @@ def initRoutes(app):
     
     @app.route('/wink', methods=['GET'])
     def  winkEndpoint():
-        print('wink')
-        app.hardware.blink_n_times_in_time(blink_times=20, seconds=2)
+        app.hardware.blink_n_times_in_time(number_of_blinks=20, seconds_to_blink=2)
         return ';)'
     
     @app.route('/textMe', methods=['GET'])

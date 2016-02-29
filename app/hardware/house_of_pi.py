@@ -1,7 +1,7 @@
 #!env/bin/python
 from app.server.hardware_interface import HardwareInterface 
 from app.hardware.timed_LED_display import TimedLEDDisplay
-import time
+from app.hardware.wink_display import WinkDisplay
 
 class HouseOfPi(HardwareInterface):
 
@@ -24,10 +24,7 @@ class HouseOfPi(HardwareInterface):
         ledDisplay = TimedLEDDisplay(self.GPIO, channel)
         ledDisplay.start_led_display_every(self.led_display_cycle_time)
 
-    def blink_n_times_in_time(self, blink_times, seconds):
-        led_blink_time = seconds / blink_times
-        for i in range(0, blink_times):
-            self.GPIO.output(self.BLUE_LED, self.GPIO.HIGH)
-            time.sleep(led_blink_time)
-            self.GPIO.output(self.BLUE_LED, self.GPIO.LOW)
-            time.sleep(led_blink_time)
+    def blink_n_times_in_time(self, number_of_blinks, seconds_to_blink, channel=13):
+        winkDisplay = WinkDisplay(self.GPIO, channel)
+        winkDisplay.wink(number_of_blinks, seconds_to_blink)
+        

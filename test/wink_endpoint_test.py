@@ -13,7 +13,7 @@ class WinkEndpointTest(unittest.TestCase):
     def test_gpio_blinks_twenty_times_in_twenty_seconds(self):
         response = self.app.get('/wink')
         self.assertEqual(response.status_code, 200)
-        time.sleep(2)
+        time.sleep(2.1)
         self.assertEqual(self.gpio_factory.getGPIO().number_of_high_calls_for_channel(13), 20)
         self.assertEqual(self.gpio_factory.getGPIO().number_of_low_calls_for_channel(13), 20)
         

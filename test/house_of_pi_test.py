@@ -41,10 +41,24 @@ class HouseOfPiTest(unittest.TestCase):
         
         mock_LED_display.assert_called_with(self.mock_gpio, 42)
         mock_LED_display_instance.start_led_display_every.assert_called_with(pi.led_display_cycle_time)
+    
+    
+    @patch('app.hardware.house_of_pi.WinkDisplay')
+    def test_wink_display_is_wired_correctly(self, mock_winker):
+        mock_winker_instance = mock_winker.return_value
+        pi = HouseOfPi(self.mock_gpio_factory)
+        channel = 33
+        number_of_blinks = 23
+        seconds_to_blink = 48
+        
+        pi.blink_n_times_in_time(channel = channel, number_of_blinks = number_of_blinks, seconds_to_blink = seconds_to_blink)
+        
+        mock_winker.assert_called_with(self.mock_gpio, channel)
+        mock_winker_instance.wink.assert_called_with(number_of_blinks, seconds_to_blink)
 
 
     def test_on_called_one_time(self):
         pi = HouseOfPi(self.mock_gpio_factory)
-        pi.blink_n_times_in_time(1, 1)
+        pi.blink_n_times_in_time(13, 1, 1)
         self.assertTrue(self.mock_gpio.output.called)
     
