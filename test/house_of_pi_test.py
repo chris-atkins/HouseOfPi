@@ -11,6 +11,17 @@ class HouseOfPiTest(unittest.TestCase):
         self.mock_gpio = self.mock_gpio_factory.getGPIO.return_value
     
     
+    def test_GPIO_setup_in_board_config(self):
+        HouseOfPi(self.mock_gpio_factory)
+        self.mock_gpio.setmode.assert_called_once_with(self.mock_gpio.BOARD)
+        
+    
+    def test_green_LED_setup(self):
+        pi = HouseOfPi(self.mock_gpio_factory)
+        self.assertEquals(pi.GREEN_LED, 11)
+        self.mock_gpio.setup.assert_called_once_with(pi.GREEN_LED, self.mock_gpio.OUT)
+    
+    
     @patch('app.hardware.house_of_pi.TimedLEDDisplay')
     def test_start_displaying_on_state_is_wired_correctly(self, mock_LED_display):
         mock_LED_display_instance = mock_LED_display.return_value
