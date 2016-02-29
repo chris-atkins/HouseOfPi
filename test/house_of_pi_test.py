@@ -2,6 +2,7 @@
 from app.hardware.house_of_pi import HouseOfPi
 import unittest
 from mock import MagicMock
+from mock import call
 from mock import patch
 
 class HouseOfPiTest(unittest.TestCase):
@@ -19,7 +20,17 @@ class HouseOfPiTest(unittest.TestCase):
     def test_green_LED_setup(self):
         pi = HouseOfPi(self.mock_gpio_factory)
         self.assertEquals(pi.GREEN_LED, 11)
-        self.mock_gpio.setup.assert_called_once_with(pi.GREEN_LED, self.mock_gpio.OUT)
+        
+        expected_args = call(pi.GREEN_LED, self.mock_gpio.OUT)
+        self.assertTrue(expected_args in self.mock_gpio.setup.call_args_list)
+        
+    
+    def test_blue_LED_setup(self):
+        pi = HouseOfPi(self.mock_gpio_factory)
+        self.assertEquals(pi.BLUE_LED, 13)
+        
+        expected_args = call(pi.BLUE_LED, self.mock_gpio.OUT)
+        self.assertTrue(expected_args in self.mock_gpio.setup.call_args_list)
     
     
     @patch('app.hardware.house_of_pi.TimedLEDDisplay')

@@ -14,6 +14,6 @@ class WinkEndpointTest(unittest.TestCase):
         response = self.app.get('/wink')
         self.assertEqual(response.status_code, 200)
         time.sleep(2)
-        self.assertEqual(self.gpio_factory.getGPIO().number_of_high_calls_for_channel(11), 20)
-        self.assertEqual(self.gpio_factory.getGPIO().number_of_low_calls_for_channel(11), 20)
+        self.assertEqual(self.gpio_factory.getGPIO().number_of_high_calls_for_channel(13), 20)
+        self.assertEqual(self.gpio_factory.getGPIO().number_of_low_calls_for_channel(13), 20)
         
