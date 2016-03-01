@@ -57,8 +57,8 @@ class HouseOfPiTest(unittest.TestCase):
         mock_winker_instance.wink.assert_called_with(number_of_blinks, seconds_to_blink)
 
 
-    def test_on_called_one_time(self):
+    def test_wink_display_calls_gpio(self):
         pi = HouseOfPi(self.mock_gpio_factory)
-        pi.blink_n_times_in_time(13, 1, 1)
+        pi.blink_n_times_in_time(number_of_blinks = 1, number_of_blinks = 0.1, channel = 13)
         self.assertTrue(self.mock_gpio.output.called)
     
