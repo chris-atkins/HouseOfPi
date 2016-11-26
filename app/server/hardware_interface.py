@@ -8,3 +8,7 @@ class HardwareInterface(object):
     @abstractmethod
     def start_displaying_on_state(self):
         pass
+
+    @abstractmethod
+    def start_motion_sensing(self):
+        pass

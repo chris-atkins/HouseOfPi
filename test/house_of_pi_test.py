@@ -31,6 +31,15 @@ class HouseOfPiTest(unittest.TestCase):
         
         expected_args = call(pi.BLUE_LED, self.mock_gpio.OUT)
         self.assertTrue(expected_args in self.mock_gpio.setup.call_args_list)
+
+
+    def test_IR_SENSOR_setup(self):
+        pi = HouseOfPi(self.mock_gpio_factory)
+        self.assertEquals(pi.IR_SENSOR, 16)
+        self.assertEquals(pi.motion_sensing_cycle_time, .1)
+
+        expected_args = call(pi.IR_SENSOR, self.mock_gpio.IN)
+        self.assertTrue(expected_args in self.mock_gpio.setup.call_args_list)
     
     
     @patch('app.hardware.house_of_pi.TimedLEDDisplay')
@@ -41,7 +50,17 @@ class HouseOfPiTest(unittest.TestCase):
         
         mock_LED_display.assert_called_with(self.mock_gpio, 42)
         mock_LED_display_instance.start_led_display_every.assert_called_with(pi.led_display_cycle_time)
-    
+
+
+    @patch('app.hardware.house_of_pi.MotionSensor')
+    def test_start_motion_sensing_is_wired_correctly(self, mock_motion_sensor):
+        mock_motion_sensor_instance = mock_motion_sensor.return_value
+        pi = HouseOfPi(self.mock_gpio_factory)
+        pi.start_motion_sensing()
+
+        mock_motion_sensor.assert_called_with(gpio=self.mock_gpio, ir_sensor_channel=pi.IR_SENSOR, output_led_channel=pi.BLUE_LED)
+        mock_motion_sensor_instance.start_motion_sensing.assert_called_with(sensing_cycle_time=pi.motion_sensing_cycle_time)
+
     
     @patch('app.hardware.house_of_pi.WinkDisplay')
     def test_wink_display_is_wired_correctly(self, mock_winker):
@@ -59,6 +78,6 @@ class HouseOfPiTest(unittest.TestCase):
 
     def test_wink_display_calls_gpio(self):
         pi = HouseOfPi(self.mock_gpio_factory)
-        pi.blink_n_times_in_time(number_of_blinks = 1, number_of_blinks = 0.1, channel = 13)
+        pi.blink_n_times_in_time(number_of_blinks = 1, seconds_to_blink = 0.1, channel = 13)
         self.assertTrue(self.mock_gpio.output.called)
     

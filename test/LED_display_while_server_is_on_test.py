@@ -11,7 +11,7 @@ class ServerOnLEDTest(LiveServerTestCase):
 
     def test_setup_called_on_correct_pin(self):
         gpio = testHelper.load_tracked_gpio()
-        self.assertTrue(gpio.setup_was_called_for_channel(11))
+        self.assertTrue(gpio.setup_was_called_as_output_for_channel(11))
     
     def test_on_and_off_called_every_2_seconds(self):
         time.sleep(4)

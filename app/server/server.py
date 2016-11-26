@@ -13,3 +13,4 @@ class Server(Flask):
         
     def init_hardware(self):
         self.hardware.start_displaying_on_state()
+        self.hardware.start_motion_sensing()
