@@ -2,15 +2,15 @@
 
 echo 'starting mock server'
 if [ "$(uname)" == "Darwin" ]; then
-	echo 'on Mac - running: ./env-setup/run-mock-my-house-server &'
-    ./env-setup/run-mock-my-house-server &
+	echo 'on Mac - running: ./env-setup/run-mock-servers &'
+    ./env-setup/run-mock-servers &
 else
-	echo 'on non-Mac - running: setsid ./env-setup/run-mock-my-house-server < /dev/zero &> mock-server-log.txt &'
-    setsid ./env-setup/run-mock-my-house-server < /dev/zero &> mock-server-log.txt &
+	echo 'on non-Mac - running: setsid ./env-setup/run-mock-servers < /dev/zero &> mock-server-log.txt &'
+    setsid ./env-setup/run-mock-servers < /dev/zero &> mock-server-log.txt &
 fi
 
 echo 'running tests'
 env/bin/py.test ./test -srw
 
 echo 'shutting down mock server'
-./env-setup/stop-mock-my-house-server
+./env-setup/stop-mock-servers

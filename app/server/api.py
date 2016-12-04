@@ -1,5 +1,5 @@
 #!env/bin/python
-from flask import request, send_from_directory  # @UnresolvedImport
+from flask import request, send_from_directory, jsonify  # @UnresolvedImport
 import requests  # @UnresolvedImport
 import os
 from app.server.utils.endpoints import listEndpoints
@@ -46,3 +46,15 @@ def initRoutes(app):
     def favicon():
 #         print(app.root_path)  - this has been a problem in the past - print this in some other endpoint - this doesn't print here if the file is not found
         return send_from_directory(os.path.join(app.root_path, 'app/server/static'), 'favicon.ico', mimetype='image/vnd.microsoft.icon')
+
+    @app.route('/tstat', methods=['GET'])
+    def get_thermostat_state():
+        url = app.config.get('THERMOSTAT_URL') + '/tstat'
+        response = requests.get(url)
+        return jsonify(response.json())
+
+    @app.route('/tstat', methods=['POST'])
+    def set_thermostat_state():
+        url = app.config.get('THERMOSTAT_URL') + '/tstat'
+        response = requests.post(url, json=request.get_json(force=True))
+        return jsonify(response.json())

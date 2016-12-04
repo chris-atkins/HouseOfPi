@@ -56,12 +56,13 @@ class TestGPIO(object):
 
 
     def input(self, channel):
-        print('looking for ' + str(channel) + ' in ' + str(self.should_return_high_for_channel_list))
+        # print('looking for ' + str(channel) + ' in ' + str(self.should_return_high_for_channel_list))
         should_return_high = channel in self.should_return_high_for_channel_list
         if should_return_high:
-            print('returning 1 for channel input request')
+            # print('returning 1 for channel input request')
             return 1
         else:
+            # print('returning 0 for channel input request')
             return 0
 
 
@@ -79,14 +80,14 @@ class TestGPIO(object):
 
     def simulate_high_input_on_pin(self, channel):
         if channel not in self.should_return_high_for_channel_list:
-            print('adding channel to list: ' + str(channel))
+            # print('adding channel to list: ' + str(channel))
             self.should_return_high_for_channel_list.append(channel)
         # print('current list after simulate high called: ' + str(self.should_return_high_for_channel_list))
 
 
     def simulate_low_input_on_pin(self, channel):
         if channel in self.should_return_high_for_channel_list:
-            print('removing channel from list: ' + str(channel))
+            # print('removing channel from list: ' + str(channel))
             self.should_return_high_for_channel_list.remove(channel)
         # print('current list after simulate low called: ' + str(self.should_return_high_for_channel_list))
 
@@ -109,6 +110,6 @@ class TestGPIO(object):
     
     def save_status(self):
         if self.should_save_status:
-            print('saving gpio status')
+            # print('saving gpio status')
             with open('gpio.pickle', 'wb') as f:
                 pickle.dump(self, f)

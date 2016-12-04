@@ -12,7 +12,8 @@ hardware = HouseOfPi(gpioFactory)
 app = Server(__name__, hardware)
 
 app.config.update(dict(
-    MY_HOUSE_URL='https://poorknight.com'
+    MY_HOUSE_URL='https://poorknight.com',
+    THERMOSTAT_URL='http://thermostat-76-B6-35'
 ))
 
 initRoutes(app)
