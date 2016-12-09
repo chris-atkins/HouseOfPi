@@ -21,7 +21,6 @@ def server_is_up():
 def get_thermostat_state():
     global thermostatGetCount
     thermostatGetCount += 1
-    print('GET thermostat state called n times: ' + str(thermostatGetCount))
     returnObject = {"message": "thermostat stub GET response"}
     return json.dumps(returnObject)
 
@@ -29,7 +28,6 @@ def get_thermostat_state():
 def post_thermostat_state():
     global lastThermostatPostRequest
     lastThermostatPostRequest = request.json
-    print(str(lastThermostatPostRequest))
     return_object = {"message": "Thermostat stub POST response"}
     return json.dumps(return_object)
 

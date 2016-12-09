@@ -5,3 +5,6 @@ chmod a+x ./mock_services/mock_my_house_server.py
 
 chmod a+x ./mock_services/mock_thermostat_server.py
 ./mock_services/mock_thermostat_server.py &
+
+chmod a+x ./mock_services/mock_hue_server.py
+./mock_services/mock_hue_server.py &

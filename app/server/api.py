@@ -58,3 +58,10 @@ def initRoutes(app):
         url = app.config.get('THERMOSTAT_URL') + '/tstat'
         response = requests.post(url, json=request.get_json(force=True))
         return jsonify(response.json())
+
+    @app.route('/lights/state', methods=['PUT'])
+    def set_lights_state():
+        url = app.config.get('LIGHTS_URL') + '/api/6b1abf1f6e7157cc3843ee8b668d32d/groups/0/action'
+        response = requests.put(url, json=request.get_json(force=True))
+        return jsonify(response.json())
+
