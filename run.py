@@ -6,6 +6,7 @@ from app.hardware.house_of_pi import HouseOfPi
 from app.hardware.gpio_factory import GPIOFactory
 
 debugOn = os.environ.get('PYTHON_DEBUG_ON')
+sslOn = os.environ.get('PYTHON_SSL_ON')
 
 gpioFactory = GPIOFactory()
 hardware = HouseOfPi(gpioFactory)
@@ -19,7 +20,15 @@ app.config.update(dict(
 
 initRoutes(app)
 
-if debugOn != None and (debugOn.lower() == 'true' or debugOn.lower() == 'yes'):
-    app.run(debug=True, host='0.0.0.0')
+if debugOn is not None and (debugOn.lower() == 'true' or debugOn.lower() == 'yes'):
+    print('STARTING SERVER IN DEBUG MODE')
+    app.run(host='0.0.0.0', port=5000, debug=True)
+
+elif sslOn is not None and (sslOn.lower() == 'true' or sslOn.lower() == 'yes'):
+    print('STARTING SERVER WITH SSL ENABLED')
+    context = ('cert.crt', 'key.key')
+    app.run(host='0.0.0.0', port=5000, ssl_context=context, debug=False)
+
 else:
-    app.run(debug=False, host='0.0.0.0')
+    print('STARTING SERVER WITH NO SSL')
+    app.run(host='0.0.0.0', port=5000, debug=False)
