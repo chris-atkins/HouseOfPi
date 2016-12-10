@@ -5,3 +5,4 @@ nohup.out
 gpio.pickle
 .idea/
 HouseOfPi.iml
+certs/
