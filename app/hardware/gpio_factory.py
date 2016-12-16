@@ -47,4 +47,7 @@ class EmptyGPIO(object):
     
     def setmode(self, mode):
         pass
+
+    def input(self, channel):
+        pass
     
