@@ -6,3 +6,5 @@ gpio.pickle
 .idea/
 HouseOfPi.iml
 certs/
+cert.crt
+key.key

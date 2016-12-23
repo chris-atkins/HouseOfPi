@@ -1,5 +1,5 @@
 #!/bin/sh
 
 chmod a+x ./run.py
-export PYTHON_SSL_ON=false
+export PYTHON_SSL_ON=true
 ./run.py
