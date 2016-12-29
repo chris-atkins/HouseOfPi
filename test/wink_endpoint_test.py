@@ -1,9 +1,17 @@
 #!env/bin/python
+
+# noinspection PyUnresolvedReferences
+import time
+# noinspection PyUnresolvedReferences
+import requests
+# noinspection PyUnresolvedReferences
 import unittest
+
 from test_server_setup import buildTestServer
 from test_server_setup import authenticationSecret
+from test_server_setup import myHouseUrl
 from mock_services.test_gpio import GPIOTestFactory
-import time
+
 
 class WinkEndpointTest(unittest.TestCase):
 
@@ -21,4 +29,18 @@ class WinkEndpointTest(unittest.TestCase):
     def test_wink_endpoint_requires_authentication_header_with_secret(self):
         response = self.app.get('/wink')
         self.assertEqual(response.status_code, 401)
-        
+
+    def test_wink_endpoint_with_no_auth_sends_text(self):
+        self.app.get('/wink')
+        sentText = requests.get(myHouseUrl + '/lastNotificationMessage').text
+
+        expectedPartialTextContent = "An unauthorized request was made to the House of Pi application:"
+        self.assertIn(expectedPartialTextContent, sentText)
+
+    def test_wink_endpoint_with_bad_auth_sends_text(self):
+        self.app.get('/wink', headers={'auth-secret': 'bad Secret that is wrong'})
+        sentText = requests.get(myHouseUrl + '/lastNotificationMessage').text
+
+        expectedPartialTextContent = "An unauthorized request was made to the House of Pi application:"
+        self.assertIn(expectedPartialTextContent, sentText)
+

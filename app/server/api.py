@@ -29,13 +29,13 @@ def initRoutes(app):
         return str(listEndpoints(app))
     
     @app.route('/wink', methods=['GET'])
-    @authenticate(secret=app.config.get('AUTHENTICATION_SECRET'))
+    @authenticate(configuration=app.config)
     def  winkEndpoint():
         app.hardware.blink_n_times_in_time(number_of_blinks=20, seconds_to_blink=2)
         return ';)'
     
     @app.route('/textMe', methods=['GET'])
-    @authenticate(secret=app.config.get('AUTHENTICATION_SECRET'))
+    @authenticate(configuration=app.config)
     def textMe():
         #     http://stackoverflow.com/questions/17301938/making-a-request-to-a-restful-api-using-python
         url = app.config.get('MY_HOUSE_URL') + '/house/notification'
@@ -50,21 +50,21 @@ def initRoutes(app):
         return send_from_directory(os.path.join(app.root_path, 'app/server/static'), 'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
     @app.route('/tstat', methods=['GET'])
-    @authenticate(secret=app.config.get('AUTHENTICATION_SECRET'))
+    @authenticate(configuration=app.config)
     def get_thermostat_state():
         url = app.config.get('THERMOSTAT_URL') + '/tstat'
         response = requests.get(url)
         return jsonify(response.json())
 
     @app.route('/tstat', methods=['POST'])
-    @authenticate(secret=app.config.get('AUTHENTICATION_SECRET'))
+    @authenticate(configuration=app.config)
     def set_thermostat_state():
         url = app.config.get('THERMOSTAT_URL') + '/tstat'
         response = requests.post(url, json=request.get_json(force=True))
         return jsonify(response.json())
 
     @app.route('/lights/state', methods=['PUT'])
-    @authenticate(secret=app.config.get('AUTHENTICATION_SECRET'))
+    @authenticate(configuration=app.config)
     def set_lights_state():
         url = app.config.get('LIGHTS_URL') + '/api/6b1abf1f6e7157cc3843ee8b668d32d/groups/0/action'
         response = requests.put(url, json=request.get_json(force=True))
