@@ -8,18 +8,18 @@ class HouseRequest:
 def create_requests_for_mode(mode, app_config):
 
     if mode == 'lights-on':
-        url = app_config.get('LIGHTS_URL') + group_path(group='0')
+        url = app_config.get('LIGHTS_URL') + group_path(group='4')
         body = build_light_request_body(on=True)
         request = HouseRequest(url, body)
         return [request]
 
     elif mode == 'lights-off':
-        url = app_config.get('LIGHTS_URL') + group_path(group='0')
+        url = app_config.get('LIGHTS_URL') + group_path(group='4')
         body = build_light_request_body(on=False)
         request = HouseRequest(url, body)
         return [request]
 
-    elif mode == 'at-work':
+    elif mode == 'at-work-mode':
         plant_light_url = app_config.get('LIGHTS_URL') + group_path(group='2')
         plant_light_body = build_light_request_body(on=True)
         plant_light_request = HouseRequest(plant_light_url, plant_light_body)

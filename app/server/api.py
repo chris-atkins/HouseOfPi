@@ -3,7 +3,7 @@ from flask import request, send_from_directory, jsonify  # @UnresolvedImport
 import requests  # @UnresolvedImport
 import os
 from app.server.authentication_interceptor import authenticate
-from app.server.house_mode_request_creator import create_requests_for_mode
+from app.server.house_command_request_creator import create_requests_for_mode
 
 def initRoutes(app):
     
@@ -71,13 +71,13 @@ def initRoutes(app):
         response = requests.put(url, json=request.get_json(force=True))
         return jsonify(response.json())
 
-    @app.route('/house', methods=['PUT'])
+    @app.route('/house/command', methods=['PUT'])
     @authenticate(configuration=app.config)
     def set_house():
-        mode = request.get_json()['mode']
+        mode = request.get_json()['command']
         hue_requests = create_requests_for_mode(mode=mode, app_config=app.config)
 
         for hue_request in hue_requests:
             requests.put(hue_request.url, json=hue_request.body)
-        return jsonify({'mode': mode})
+        return jsonify({'status': 'success'})
 
