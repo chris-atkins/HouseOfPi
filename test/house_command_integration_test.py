@@ -1,6 +1,7 @@
 #!env/bin/python
 from test_server_setup import buildTestServer
 from test_server_setup import lightsUrl
+from test_server_setup import thermostatUrl
 from test_server_setup import authenticationSecret
 from flask.ext.testing import LiveServerTestCase  # @UnresolvedImport
 import requests  # @UnresolvedImport
@@ -58,7 +59,7 @@ class HouseCommandIntegrationTestCase(LiveServerTestCase):
         received_data = requests.get(lightsUrl + '/lastPUTMessage/4').json()
         self.assertEquals(received_data, expected_sent_request)
 
-    def test_house_mode_at_work_sends_correct_requests_to_hue(self):
+    def test_house_mode_at_work_sends_correct_requests(self):
         request_json = {'command': 'at-work-mode'}
         response = requests.put(self.get_server_url() + '/house/command', json=request_json, headers={'auth-secret': authenticationSecret})
         self.assertEquals(response.status_code, 200)
@@ -84,11 +85,19 @@ class HouseCommandIntegrationTestCase(LiveServerTestCase):
             'alert':'none',
             'xy': [0.3852,0.3815]
         }
+        expected_heat_request = {
+            't_heat':64.0,
+            'tmode':1,
+            'hold':1
+        }
         received_data = requests.get(lightsUrl + '/lastPUTMessage/1').json()
         self.assertEquals(received_data, expected_other_light_request)
 
         received_data = requests.get(lightsUrl + '/lastPUTMessage/2').json()
         self.assertEquals(received_data, expected_plant_light_request)
+
+        received_data = requests.get(thermostatUrl + '/lastPOSTMessage').json()
+        self.assertEquals(received_data, expected_heat_request)
 
 
     def test_house_mode_outside_lights_off_sends_correct_request_to_hue(self):

@@ -75,9 +75,13 @@ def initRoutes(app):
     @authenticate(configuration=app.config)
     def set_house():
         mode = request.get_json()['command']
-        hue_requests = create_requests_for_mode(mode=mode, app_config=app.config)
+        house_requests = create_requests_for_mode(mode=mode, app_config=app.config)
 
-        for hue_request in hue_requests:
-            requests.put(hue_request.url, json=hue_request.body)
+        for house_request in house_requests:
+            if house_request.request_type == 'put':
+                requests.put(house_request.url, json=house_request.body)
+            elif house_request.request_type == 'post':
+                requests.post(house_request.url, json=house_request.body)
+
         return jsonify({'status': 'success'})
 
