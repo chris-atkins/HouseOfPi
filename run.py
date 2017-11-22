@@ -15,7 +15,7 @@ app = Server(__name__, hardware)
 app.config.update(dict(
     MY_HOUSE_URL='https://poorknight.com',
     THERMOSTAT_URL='http://thermostat-76-B6-35',
-    LIGHTS_URL='http://Philips-hue',
+    LIGHTS_URL='http://10.0.0.196',
     AUTHENTICATION_SECRET=os.environ.get('AUTHENTICATION_SECRET')
 ))
 
