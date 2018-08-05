@@ -46,7 +46,6 @@ def authenticate(configuration):
         data.append('endpoint: ' + str(request.endpoint))
         data.append('json: ' + str(request.json))
         data.append('max_content_length: ' + str(request.max_content_length))
-        data.append('module: ' + str(request.module))
         data.append('routing_exception: ' + str(request.routing_exception))
         data.append('url_rule: ' + str(request.url_rule))
         data.append('view_args: ' + str(request.view_args))

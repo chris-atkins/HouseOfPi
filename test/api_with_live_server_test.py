@@ -1,7 +1,7 @@
 #!env/bin/python
 
 from test_server_setup import buildTestServer
-from flask.ext.testing import LiveServerTestCase  # @UnresolvedImport
+from flask_testing import LiveServerTestCase  # @UnresolvedImport
 import requests  # @UnresolvedImport
 
 class MyTestCase(LiveServerTestCase):

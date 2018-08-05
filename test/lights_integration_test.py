@@ -2,7 +2,7 @@
 from test_server_setup import buildTestServer
 from test_server_setup import lightsUrl
 from test_server_setup import authenticationSecret
-from flask.ext.testing import LiveServerTestCase  # @UnresolvedImport
+from flask_testing import LiveServerTestCase  # @UnresolvedImport
 import requests  # @UnresolvedImport
 
 class LightsIntegrationTestCase(LiveServerTestCase):
