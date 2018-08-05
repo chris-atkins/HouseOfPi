@@ -1,10 +1,13 @@
 #!/bin/sh
 
 chmod a+x ./mock_services/mock_my_house_server.py
-./mock_services/mock_my_house_server.py &
+./env/bin/python ./mock_services/mock_my_house_server.py &
 
 chmod a+x ./mock_services/mock_thermostat_server.py
-./mock_services/mock_thermostat_server.py &
+./env/bin/python ./mock_services/mock_thermostat_server.py &
 
 chmod a+x ./mock_services/mock_hue_server.py
-./mock_services/mock_hue_server.py &
+./env/bin/python ./mock_services/mock_hue_server.py &
+
+chmod a+x ./mock_services/mock_ip_address_server.py
+./env/bin/python ./mock_services/mock_ip_address_server.py &

@@ -16,6 +16,7 @@ app.config.update(dict(
     MY_HOUSE_URL='https://poorknight.com',
     THERMOSTAT_URL='http://10.0.0.115',
     LIGHTS_URL='http://10.0.0.196',
+    IP_ADDRESS_URL='https://api.ipify.org',
     AUTHENTICATION_SECRET=os.environ.get('AUTHENTICATION_SECRET')
 ))
 
