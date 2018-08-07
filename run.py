@@ -2,6 +2,7 @@
 import os
 from app.server.server import Server
 from app.server.api import initRoutes
+# from app.server.scheduled_jobs import init_scheduled_jobs
 from app.hardware.house_of_pi import HouseOfPi
 from app.hardware.gpio_factory import GPIOFactory
 
@@ -14,13 +15,15 @@ app = Server(__name__, hardware)
 
 app.config.update(dict(
     MY_HOUSE_URL='https://poorknight.com',
-    THERMOSTAT_URL='http://10.0.0.115',
+    # THERMOSTAT_URL='http://10.0.0.115',   #handled in env vars on pi
     LIGHTS_URL='http://10.0.0.196',
     IP_ADDRESS_URL='https://api.ipify.org',
+    SECONDS_BETWEEN_IP_REPORTS='10',
     AUTHENTICATION_SECRET=os.environ.get('AUTHENTICATION_SECRET')
 ))
 
 initRoutes(app)
+# init_scheduled_jobs(app.config)
 
 if debugOn is not None and (debugOn.lower() == 'true' or debugOn.lower() == 'yes'):
     print('STARTING SERVER IN DEBUG MODE')
