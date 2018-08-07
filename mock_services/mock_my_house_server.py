@@ -11,6 +11,7 @@ app.config.from_envvar('FLASKR_SETTINGS', silent=True)
 
 
 lastNotifyRequest = None
+last_house_ip = '{"message":"no ip post has happened"}'
 
 @app.route('/', methods=['GET'])
 def server_is_up():
@@ -31,5 +32,17 @@ def get_last_notify_request():
     lastNotifyRequest = None
     return json.dumps(returnObject)
 
+@app.route('/house/ip', methods=['POST'])
+def post_new_house_ip():
+    global last_house_ip
+    last_house_ip = request.json
+    return json.dumps(request.json)
+
+@app.route('/lastHouseIpPost', methods=['GET'])
+def get_last_house_ip_post():
+    global last_house_ip
+    returnObject = last_house_ip
+    last_house_ip = '{"message":"no ip post has happened since the last check"}'
+    return json.dumps(returnObject)
 
 app.run(debug=True, host='127.0.0.1', port=3333)
