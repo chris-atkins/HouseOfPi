@@ -15,7 +15,7 @@ def report_ip_address():
     ip_finder = IpAddressFinder(server_config)
     ip_address = ip_finder.find_current_ip_address()
 
-    postData = {"houseIp": ip_address}
+    postData = {"houseIp": 'https://' + ip_address}
     url = server_config.get('MY_HOUSE_URL') + '/house/ip'
     requests.post(url, json=postData, verify=False)
 
