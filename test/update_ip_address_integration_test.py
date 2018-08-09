@@ -18,7 +18,7 @@ class UpdateIpAddressIntegrationTestCase(LiveServerTestCase):
 
     def test_ip_is_updated_with_the_frequency_set_by_config(self):
         expected_sent_request = {
-            'houseIp': "https://1.2.3.4"
+            'houseIp': "https://1.2.3.4:5000"
         }
 
         time.sleep(2)
