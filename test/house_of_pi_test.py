@@ -19,7 +19,7 @@ class HouseOfPiTest(unittest.TestCase):
     
     def test_green_LED_setup(self):
         pi = HouseOfPi(self.mock_gpio_factory)
-        self.assertEquals(pi.GREEN_LED, 11)
+        self.assertEqual(pi.GREEN_LED, 11)
         
         expected_args = call(pi.GREEN_LED, self.mock_gpio.OUT)
         self.assertTrue(expected_args in self.mock_gpio.setup.call_args_list)
@@ -27,7 +27,7 @@ class HouseOfPiTest(unittest.TestCase):
     
     def test_blue_LED_setup(self):
         pi = HouseOfPi(self.mock_gpio_factory)
-        self.assertEquals(pi.BLUE_LED, 13)
+        self.assertEqual(pi.BLUE_LED, 13)
         
         expected_args = call(pi.BLUE_LED, self.mock_gpio.OUT)
         self.assertTrue(expected_args in self.mock_gpio.setup.call_args_list)
@@ -35,8 +35,8 @@ class HouseOfPiTest(unittest.TestCase):
 
     def test_IR_SENSOR_setup(self):
         pi = HouseOfPi(self.mock_gpio_factory)
-        self.assertEquals(pi.IR_SENSOR, 16)
-        self.assertEquals(pi.motion_sensing_cycle_time, .1)
+        self.assertEqual(pi.IR_SENSOR, 16)
+        self.assertEqual(pi.motion_sensing_cycle_time, .1)
 
         expected_args = call(pi.IR_SENSOR, self.mock_gpio.IN)
         self.assertTrue(expected_args in self.mock_gpio.setup.call_args_list)

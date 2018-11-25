@@ -70,11 +70,13 @@ class TestGPIO(object):
         if high_or_low == self.HIGH:
             self.channel_output_high_calls[channel] += 1
             self.simulate_high_input_on_pin(channel)
-            
+            # print("Saving HIGH for channel " + str(channel) + ' | ' + str(self.channel_output_high_calls[channel]))
+
         if high_or_low == self.LOW:
             self.channel_output_low_calls[channel] += 1
             self.simulate_low_input_on_pin(channel)
-            
+            # print("Saving LOW for channel " + str(channel) + '  | ' + str(self.channel_output_low_calls[channel]))
+
         self.save_status()
 
 
@@ -94,9 +96,11 @@ class TestGPIO(object):
 #######################################################################     
     
     def number_of_high_calls_for_channel(self, channel):
+        # print('reporting HIGH calls: ' + str(self.channel_output_high_calls[channel]))
         return self.channel_output_high_calls[channel]
     
     def number_of_low_calls_for_channel(self, channel):
+        # print('reporting LOW calls: ' + str(self.channel_output_low_calls[channel]))
         return self.channel_output_low_calls[channel]
     
     def setup_was_called_as_output_for_channel(self, channel):

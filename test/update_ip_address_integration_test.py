@@ -23,9 +23,9 @@ class UpdateIpAddressIntegrationTestCase(LiveServerTestCase):
 
         time.sleep(2)
         received_data = requests.get(myHouseUrl + '/lastHouseIpPost').json()
-        self.assertEquals(received_data, expected_sent_request)
+        self.assertEqual(received_data, expected_sent_request)
 
         time.sleep(1)
         received_data = requests.get(myHouseUrl + '/lastHouseIpPost').json()
-        self.assertEquals(received_data, expected_sent_request)
+        self.assertEqual(received_data, expected_sent_request)
 

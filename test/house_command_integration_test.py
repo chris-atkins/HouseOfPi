@@ -24,8 +24,8 @@ class HouseCommandIntegrationTestCase(LiveServerTestCase):
     def test_house_mode_lights_on_sends_correct_request_to_hue(self):
         request_json = {'command': 'lights-on'}
         response = requests.put(self.get_server_url() + '/house/command', json=request_json, headers={'auth-secret': authenticationSecret})
-        self.assertEquals(response.status_code, 200)
-        self.assertEquals(response.json(), {'status': 'success'})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), {'status': 'success'})
 
         expected_sent_request = {
             'on': True,
@@ -38,13 +38,13 @@ class HouseCommandIntegrationTestCase(LiveServerTestCase):
             'xy': [0.3852,0.3815]
         }
         received_data = requests.get(lightsUrl + '/lastPUTMessage/4').json()
-        self.assertEquals(received_data, expected_sent_request)
+        self.assertEqual(received_data, expected_sent_request)
 
     def test_house_mode_lights_off_sends_correct_request_to_hue(self):
         request_json = {'command': 'lights-off'}
         response = requests.put(self.get_server_url() + '/house/command', json=request_json, headers={'auth-secret': authenticationSecret})
-        self.assertEquals(response.status_code, 200)
-        self.assertEquals(response.json(), {'status': 'success'})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), {'status': 'success'})
 
         expected_sent_request = {
             'on': False,
@@ -57,13 +57,13 @@ class HouseCommandIntegrationTestCase(LiveServerTestCase):
             'xy': [0.3852,0.3815]
         }
         received_data = requests.get(lightsUrl + '/lastPUTMessage/4').json()
-        self.assertEquals(received_data, expected_sent_request)
+        self.assertEqual(received_data, expected_sent_request)
 
     def test_house_mode_at_work_sends_correct_requests(self):
         request_json = {'command': 'at-work-mode'}
         response = requests.put(self.get_server_url() + '/house/command', json=request_json, headers={'auth-secret': authenticationSecret})
-        self.assertEquals(response.status_code, 200)
-        self.assertEquals(response.json(), {'status': 'success'})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), {'status': 'success'})
 
         expected_other_light_request = {
             'on': False,
@@ -91,20 +91,20 @@ class HouseCommandIntegrationTestCase(LiveServerTestCase):
             'hold':1
         }
         received_data = requests.get(lightsUrl + '/lastPUTMessage/1').json()
-        self.assertEquals(received_data, expected_other_light_request)
+        self.assertEqual(received_data, expected_other_light_request)
 
         received_data = requests.get(lightsUrl + '/lastPUTMessage/2').json()
-        self.assertEquals(received_data, expected_plant_light_request)
+        self.assertEqual(received_data, expected_plant_light_request)
 
         received_data = requests.get(thermostatUrl + '/lastPOSTMessage').json()
-        self.assertEquals(received_data, expected_heat_request)
+        self.assertEqual(received_data, expected_heat_request)
 
 
     def test_house_mode_outside_lights_off_sends_correct_request_to_hue(self):
         request_json = {'command': 'outside-lights-off'}
         response = requests.put(self.get_server_url() + '/house/command', json=request_json, headers={'auth-secret': authenticationSecret})
-        self.assertEquals(response.status_code, 200)
-        self.assertEquals(response.json(), {'status': 'success'})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), {'status': 'success'})
 
         expected_sent_request = {
             'on': False,
@@ -117,13 +117,13 @@ class HouseCommandIntegrationTestCase(LiveServerTestCase):
             'xy': [0.3852,0.3815]
         }
         received_data = requests.get(lightsUrl + '/lastPUTMessage/3').json()
-        self.assertEquals(received_data, expected_sent_request)
+        self.assertEqual(received_data, expected_sent_request)
 
     def test_house_mode_outside_lights_on_sends_correct_request_to_hue(self):
         request_json = {'command': 'outside-lights-on'}
         response = requests.put(self.get_server_url() + '/house/command', json=request_json, headers={'auth-secret': authenticationSecret})
-        self.assertEquals(response.status_code, 200)
-        self.assertEquals(response.json(), {'status': 'success'})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), {'status': 'success'})
 
         expected_sent_request = {
             'on': True,
@@ -136,4 +136,4 @@ class HouseCommandIntegrationTestCase(LiveServerTestCase):
             'xy': [0.3852,0.3815]
         }
         received_data = requests.get(lightsUrl + '/lastPUTMessage/3').json()
-        self.assertEquals(received_data, expected_sent_request)
+        self.assertEqual(received_data, expected_sent_request)

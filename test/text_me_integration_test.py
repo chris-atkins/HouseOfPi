@@ -20,11 +20,11 @@ class TextMeIntegrationTestCase(LiveServerTestCase):
         sentToMyHouseResponse = requests.get(myHouseUrl + '/lastNotificationMessage')
         
         expectedSentRequest = {"messageContent":"Raspberry Pi says hi and would like to inform you that it was asked to send you a message."}
-        self.assertEquals(sentToMyHouseResponse.json(), expectedSentRequest)
+        self.assertEqual(sentToMyHouseResponse.json(), expectedSentRequest)
 
     def test_text_me_returns_message_from_remote_server(self):
         response = requests.get(self.get_server_url() + '/textMe', headers={'auth-secret': authenticationSecret})
-        self.assertEquals(response.text, 'Notify stub response')
+        self.assertEqual(response.text, 'Notify stub response')
 
     def test_wink_endpoint_requires_authentication_header_with_secret(self):
         response = requests.get(self.get_server_url() + '/textMe')

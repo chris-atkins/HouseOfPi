@@ -1,7 +1,9 @@
 #!/bin/sh
-echo 'this script assumes that the jenkins machine (or container) has easy_install and virtualenv already installed'
+echo 'this script assumes that the jenkins machine (or container) has python3, easy_install, and virtualenv already installed'
 echo 'to do this run the following commands on the jenkins box:'
-echo '        apt-get install python-setuptools python-pip'
+echo '        apt-get install python3'
+echo '        apt-get install python-setuptools'
+echo '        apt-get install python-pip'
 echo '        easy_install virtualenv'
 
 virtualenv -p python3 env

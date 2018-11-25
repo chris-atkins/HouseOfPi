@@ -17,40 +17,40 @@ class ThermostatIntegrationTestCase(LiveServerTestCase):
 
     def test_get_on_thermostat_endpoint_calls_thermostat(self):
         response = requests.get(self.get_server_url() + '/tstat', headers={'auth-secret': authenticationSecret})
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
 
         count_messages_response = requests.get(thermostatUrl + '/countGETMessages', headers={'auth-secret': authenticationSecret})
         count = count_messages_response.json()['count']
-        self.assertEquals(count, 1)
+        self.assertEqual(count, 1)
 
     def test_get_on_thermostat_endpoint_returns_same_response_as_thermostat(self):
         response = requests.get(self.get_server_url() + '/tstat', headers={'auth-secret': authenticationSecret})
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
 
         expected_response = {"message": "thermostat stub GET response"}
-        self.assertEquals(response.json(), expected_response)
+        self.assertEqual(response.json(), expected_response)
 
     def test_set_temp_calls_thermostat_with_same_request(self):
         sent_data = {'a': 'b'}
         response = requests.post(self.get_server_url() + '/tstat', json=sent_data, headers={'auth-secret': authenticationSecret})
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
 
         received_data = requests.get(thermostatUrl + '/lastPOSTMessage').json()
-        self.assertEquals(received_data, sent_data)
+        self.assertEqual(received_data, sent_data)
 
     def test_set_temp_returns_response_from_thermostat(self):
         sent_data = {'a': 'b'}
         response = requests.post(self.get_server_url() + '/tstat', json=sent_data, headers={'auth-secret': authenticationSecret})
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
 
         expected_response = {"message": "Thermostat stub POST response"}
-        self.assertEquals(response.json(), expected_response)
+        self.assertEqual(response.json(), expected_response)
 
     def test_thermostat_get_endpoint_requires_authentication_header_with_secret(self):
         sent_data = {'a': 'b'}
         response = requests.post(self.get_server_url() + '/tstat', json=sent_data)
-        self.assertEquals(response.status_code, 401)
+        self.assertEqual(response.status_code, 401)
 
     def test_thermostat_post_endpoint_requires_authentication_header_with_secret(self):
         response = requests.get(self.get_server_url() + '/tstat')
-        self.assertEquals(response.status_code, 401)
+        self.assertEqual(response.status_code, 401)
