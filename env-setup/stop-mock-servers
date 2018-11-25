@@ -1,3 +1,6 @@
 #!/bin/sh
+echo 'this script assumes that the jenkins machine (or container) has killall already installed'
+echo 'to do this run the following commands on the jenkins box:'
+echo '        apt-get install psmisc'
 
 killall python
