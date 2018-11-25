@@ -17,7 +17,7 @@ from flask_testing import LiveServerTestCase  # @UnresolvedImport
 class WinkEndpointTest(LiveServerTestCase):
 
     def create_app(self):
-        return buildTestServer(track_gpio_calls = True)
+        return buildTestServer(track_gpio_calls = True, motion_sensing_cycle_time = 5)
 
     def test_gpio_blinks_twenty_times_in_twenty_seconds(self):
         response = requests.get(self.get_server_url() + '/wink', headers={'auth-secret': authenticationSecret})
@@ -29,7 +29,7 @@ class WinkEndpointTest(LiveServerTestCase):
         self.assertEqual(gpio.number_of_high_calls_for_channel(13), 20)
 
         # uses greater than because the motion sensor calls LOW on the same channel and the actual number is a little different each time
-        self.assertTrue(gpio.number_of_low_calls_for_channel(13) > 20)
+        self.assertEqual(gpio.number_of_low_calls_for_channel(13), 20)
 
     def test_wink_endpoint_requires_authentication_header_with_secret(self):
         response = requests.get(self.get_server_url() + '/wink')

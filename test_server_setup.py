@@ -19,11 +19,12 @@ def buildTestServer(track_gpio_calls = False,
                     lightsUrl=lightsUrl,
                     ipAddressUrl=ipAddressUrl,
                     secondsBetweenIpReports=secondsBetweenIpReports,
-                    authenticationSecret=authenticationSecret):
+                    authenticationSecret=authenticationSecret,
+                    motion_sensing_cycle_time=.1):
 
     if gpioFactory == None:
-        gpioFactory = GPIOTestFactory(track_gpio_calls = track_gpio_calls) 
-    hardware = HouseOfPi(gpioFactory)
+        gpioFactory = GPIOTestFactory(track_gpio_calls = track_gpio_calls)
+    hardware = HouseOfPi(gpioFactory, motion_sensing_cycle_time = motion_sensing_cycle_time)
     testApp = Server(__name__, hardware)
     
     testApp.config['TESTING'] = True

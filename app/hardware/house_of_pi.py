@@ -6,11 +6,11 @@ from app.hardware.motion_sensor import MotionSensor
 
 class HouseOfPi(HardwareInterface):
 
-    def __init__(self, gpio_factory):
+    def __init__(self, gpio_factory, motion_sensing_cycle_time = .1):
         super(HouseOfPi, self).__init__()
         
         self.led_display_cycle_time = 2
-        self.motion_sensing_cycle_time = .1
+        self.motion_sensing_cycle_time = motion_sensing_cycle_time
 
         self.GPIO = gpio_factory.getGPIO()
         self.GPIO.setmode(self.GPIO.BOARD)
