@@ -14,6 +14,12 @@ def create_requests_for_mode(mode, app_config):
         request = HouseRequest(url, body, 'put')
         return [request]
 
+    elif mode == 'dim-lights':
+        url = app_config.get('LIGHTS_URL') + group_path(group='4')
+        body = build_light_request_body(on=True, brightness=73)
+        request = HouseRequest(url, body, 'put')
+        return [request]
+
     elif mode == 'lights-off':
         url = app_config.get('LIGHTS_URL') + group_path(group='4')
         body = build_light_request_body(on=False)
@@ -52,10 +58,10 @@ def group_path(group):
     return '/api/6b1abf1f6e7157cc3843ee8b668d32d/groups/' + group + '/action'
 
 
-def build_light_request_body(on):
+def build_light_request_body(on,brightness=254):
     return {
         'on': on,
-        'bri': 254,
+        'bri': brightness,
         'hue': 19228,
         'sat': 13,
         'ct': 257,
