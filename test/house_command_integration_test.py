@@ -156,3 +156,206 @@ class HouseCommandIntegrationTestCase(LiveServerTestCase):
         }
         received_data = requests.get(lightsUrl + '/lastPUTMessage/3').json()
         self.assertEqual(received_data, expected_sent_request)
+
+
+    def test_temp_down_command_with_AC_on_and_temp_more_than_2_above_min(self):
+        current_thermostat_readings = {
+            "temp": 69.5,
+            "tmode": 2,
+            "fmode": 0,
+            "override": 1,
+            "hold": 1,
+            "t_cool": 70,
+            "tstate": 2,
+            "fstate": 1,
+            "time": {
+                "day": 6,
+                "hour": 14,
+                "minute": 51
+            },
+            "t_type_post": 0
+        }
+        requests.post(thermostatUrl + "/tstat/set-mock", json=current_thermostat_readings)
+
+        request_json = {'command': 'house-temp-down'}
+        response = requests.put(self.get_server_url() + '/house/command', json=request_json, headers={'auth-secret': authenticationSecret})
+        self.assertEqual(response.status_code, 200)
+        expected_response = {
+            "command": "house-temp-down",
+            "result": "success",
+            "temperature-mode": "AC",
+            "target-temp": 67.5
+        }
+        self.assertEqual(response.json(), expected_response)
+
+        expected_heat_request = {
+            't_cool':67.5,
+            'tmode':2,
+            'hold':1
+        }
+
+        received_data = requests.get(thermostatUrl + '/lastPOSTMessage').json()
+        self.assertEqual(received_data, expected_heat_request)
+
+
+    def test_temp_down_command_with_AC_on_and_temp_less_than_2_above_min(self):
+        current_thermostat_readings = {
+            "temp": 67.5,
+            "tmode": 2,
+            "fmode": 0,
+            "override": 1,
+            "hold": 1,
+            "t_cool": 70,
+            "tstate": 2,
+            "fstate": 1,
+            "time": {
+                "day": 6,
+                "hour": 14,
+                "minute": 51
+            },
+            "t_type_post": 0
+        }
+        requests.post(thermostatUrl + "/tstat/set-mock", json=current_thermostat_readings)
+
+        request_json = {'command': 'house-temp-down'}
+        response = requests.put(self.get_server_url() + '/house/command', json=request_json, headers={'auth-secret': authenticationSecret})
+        self.assertEqual(response.status_code, 200)
+        expected_response = {
+            "command": "house-temp-down",
+            "result": "success",
+            "temperature-mode": "AC",
+            "target-temp": 67
+        }
+        self.assertEqual(response.json(), expected_response)
+
+        expected_heat_request = {
+            't_cool':67,
+            'tmode':2,
+            'hold':1
+        }
+
+        received_data = requests.get(thermostatUrl + '/lastPOSTMessage').json()
+        self.assertEqual(received_data, expected_heat_request)
+
+
+    def test_temp_down_command_with_AC_on_and_temp_already_at_min(self):
+        current_thermostat_readings = {
+            "temp": 67,
+            "tmode": 2,
+            "fmode": 0,
+            "override": 1,
+            "hold": 1,
+            "t_cool": 70,
+            "tstate": 2,
+            "fstate": 1,
+            "time": {
+                "day": 6,
+                "hour": 14,
+                "minute": 51
+            },
+            "t_type_post": 0
+        }
+        requests.post(thermostatUrl + "/tstat/set-mock", json=current_thermostat_readings)
+
+        request_json = {'command': 'house-temp-down'}
+        response = requests.put(self.get_server_url() + '/house/command', json=request_json, headers={'auth-secret': authenticationSecret})
+        self.assertEqual(response.status_code, 200)
+        expected_response = {
+            "command": "house-temp-down",
+            "result": "no-change",
+            "temperature-mode": "AC",
+            "target-temp": 67
+        }
+        self.assertEqual(response.json(), expected_response)
+
+
+        expected_heat_request = {
+            't_cool':67,
+            'tmode':2,
+            'hold':1
+        }
+
+        received_data = requests.get(thermostatUrl + '/lastPOSTMessage').json()
+        self.assertEqual(received_data, expected_heat_request)
+
+
+    def test_temp_down_command_with_AC_on_and_temp_less_than_min(self):
+        current_thermostat_readings = {
+            "temp": 65,
+            "tmode": 2,
+            "fmode": 0,
+            "override": 1,
+            "hold": 1,
+            "t_cool": 65,
+            "tstate": 2,
+            "fstate": 1,
+            "time": {
+                "day": 6,
+                "hour": 14,
+                "minute": 51
+            },
+            "t_type_post": 0
+        }
+        requests.post(thermostatUrl + "/tstat/set-mock", json=current_thermostat_readings)
+
+        request_json = {'command': 'house-temp-down'}
+        response = requests.put(self.get_server_url() + '/house/command', json=request_json, headers={'auth-secret': authenticationSecret})
+        self.assertEqual(response.status_code, 200)
+        expected_response = {
+            "command": "house-temp-down",
+            "result": "no-change",
+            "temperature-mode": "AC",
+            "target-temp": 67
+        }
+        self.assertEqual(response.json(), expected_response)
+
+
+        expected_heat_request = {
+            't_cool':67,
+            'tmode':2,
+            'hold':1
+        }
+
+        received_data = requests.get(thermostatUrl + '/lastPOSTMessage').json()
+        self.assertEqual(received_data, expected_heat_request)
+
+
+    def test_temp_down_command_with_Furnace_on(self):
+        current_thermostat_readings = {
+            "temp": 65,
+            "tmode": 1,
+            "fmode": 0,
+            "override": 1,
+            "hold": 1,
+            "t_heat": 73,
+            "tstate": 2,
+            "fstate": 1,
+            "time": {
+                "day": 6,
+                "hour": 14,
+                "minute": 51
+            },
+            "t_type_post": 0
+        }
+        requests.post(thermostatUrl + "/tstat/set-mock", json=current_thermostat_readings)
+
+        request_json = {'command': 'house-temp-down'}
+        response = requests.put(self.get_server_url() + '/house/command', json=request_json, headers={'auth-secret': authenticationSecret})
+        self.assertEqual(response.status_code, 200)
+        expected_response = {
+            "command": "house-temp-down",
+            "result": "success",
+            "temperature-mode": "furnace",
+            "target-temp": 63
+        }
+        self.assertEqual(response.json(), expected_response)
+
+
+        expected_heat_request = {
+            't_heat':63,
+            'tmode':1,
+            'hold':1
+        }
+
+        received_data = requests.get(thermostatUrl + '/lastPOSTMessage').json()
+        self.assertEqual(received_data, expected_heat_request)
