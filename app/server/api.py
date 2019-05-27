@@ -78,6 +78,8 @@ def initRoutes(app):
 
         if mode == "house-temp-down":
             return handle_house_temp_down()
+        if mode == "house-temp-up":
+            return handle_house_temp_up()
 
         house_requests = create_requests_for_mode(mode=mode, app_config=app.config)
 
@@ -141,6 +143,63 @@ def initRoutes(app):
             "command": "house-temp-down",
             "result": "success",
             "temperature-mode": "furnace",
+            "target-temp": temp_to_set
+        }
+        return jsonify(response)
+
+
+    def handle_house_temp_up():
+        url = app.config.get('THERMOSTAT_URL') + '/tstat'
+        current_thermostat_settings = requests.get(url).json()
+
+        house_mode = current_thermostat_settings["tmode"]
+        house_temp = current_thermostat_settings["temp"]
+
+        if house_mode is 1:
+            return handle_temp_up_with_furnace_on(house_temp)
+        else:
+            return handle_temp_up_with_ac_on(house_temp)
+
+    def handle_temp_up_with_furnace_on(house_temp):
+        result = "success"
+        if house_temp >= 72:
+            result = "no-change"
+
+        temp_to_set = house_temp + 2
+        if temp_to_set > 72:
+            temp_to_set = 72
+
+        heat_request = {
+            't_heat': temp_to_set,
+            'tmode': 1,
+            'hold': 1
+        }
+        url = app.config.get('THERMOSTAT_URL') + '/tstat'
+        requests.post(url, json=heat_request)
+
+        response = {
+            "command": "house-temp-up",
+            "result": result,
+            "temperature-mode": "furnace",
+            "target-temp": temp_to_set
+        }
+        return jsonify(response)
+
+
+    def handle_temp_up_with_ac_on(house_temp):
+        temp_to_set = house_temp + 2
+        heat_request = {
+            't_cool': temp_to_set,
+            'tmode': 2,
+            'hold': 1
+        }
+        url = app.config.get('THERMOSTAT_URL') + '/tstat'
+        requests.post(url, json=heat_request)
+
+        response = {
+            "command": "house-temp-up",
+            "result": "success",
+            "temperature-mode": "AC",
             "target-temp": temp_to_set
         }
         return jsonify(response)
