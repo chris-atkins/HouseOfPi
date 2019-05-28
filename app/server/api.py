@@ -80,6 +80,8 @@ def initRoutes(app):
             return handle_house_temp_down()
         if mode == "house-temp-up":
             return handle_house_temp_up()
+        if mode == "at-work-mode":
+            mode = translate_at_work_mode()
 
         house_requests = create_requests_for_mode(mode=mode, app_config=app.config)
 
@@ -203,4 +205,15 @@ def initRoutes(app):
             "target-temp": temp_to_set
         }
         return jsonify(response)
+
+    def translate_at_work_mode():
+        url = app.config.get('THERMOSTAT_URL') + '/tstat'
+        current_thermostat_settings = requests.get(url).json()
+
+        house_mode = current_thermostat_settings["tmode"]
+
+        if house_mode is 1:
+            return "at-work-mode-furnace"
+        else:
+            return "at-work-mode-ac"
 

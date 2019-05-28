@@ -78,7 +78,26 @@ class HouseCommandIntegrationTestCase(LiveServerTestCase):
         received_data = requests.get(lightsUrl + '/lastPUTMessage/4').json()
         self.assertEqual(received_data, expected_sent_request)
 
-    def test_house_mode_at_work_sends_correct_requests(self):
+    def test_house_mode_at_work_sends_correct_requests_from_furnace_mode(self):
+        current_thermostat_readings = {
+            "temp": 69.5,
+            "tmode": 1,
+            "fmode": 0,
+            "override": 1,
+            "hold": 1,
+            "t_heat": 70,
+            "tstate": 2,
+            "fstate": 1,
+            "time": {
+                "day": 6,
+                "hour": 14,
+                "minute": 51
+            },
+            "t_type_post": 0
+        }
+        requests.post(thermostatUrl + "/tstat/set-mock", json=current_thermostat_readings)
+
+
         request_json = {'command': 'at-work-mode'}
         response = requests.put(self.get_server_url() + '/house/command', json=request_json, headers={'auth-secret': authenticationSecret})
         self.assertEqual(response.status_code, 200)
@@ -107,6 +126,65 @@ class HouseCommandIntegrationTestCase(LiveServerTestCase):
         expected_heat_request = {
             't_heat':64.0,
             'tmode':1,
+            'hold':1
+        }
+        received_data = requests.get(lightsUrl + '/lastPUTMessage/1').json()
+        self.assertEqual(received_data, expected_other_light_request)
+
+        received_data = requests.get(lightsUrl + '/lastPUTMessage/2').json()
+        self.assertEqual(received_data, expected_plant_light_request)
+
+        received_data = requests.get(thermostatUrl + '/lastPOSTMessage').json()
+        self.assertEqual(received_data, expected_heat_request)
+
+
+    def test_house_mode_at_work_sends_correct_requests_from_AC_mode(self):
+        current_thermostat_readings = {
+            "temp": 69.5,
+            "tmode": 2,
+            "fmode": 0,
+            "override": 1,
+            "hold": 1,
+            "t_cool": 68,
+            "tstate": 2,
+            "fstate": 1,
+            "time": {
+                "day": 6,
+                "hour": 14,
+                "minute": 51
+            },
+            "t_type_post": 0
+        }
+        requests.post(thermostatUrl + "/tstat/set-mock", json=current_thermostat_readings)
+
+        request_json = {'command': 'at-work-mode'}
+        response = requests.put(self.get_server_url() + '/house/command', json=request_json, headers={'auth-secret': authenticationSecret})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), {'status': 'success'})
+
+        expected_other_light_request = {
+            'on': False,
+            'bri': 254,
+            'hue': 19228,
+            'sat': 13,
+            'ct': 257,
+            'effect': 'none',
+            'alert':'none',
+            'xy': [0.3852,0.3815]
+        }
+        expected_plant_light_request = {
+            'on': True,
+            'bri': 254,
+            'hue': 19228,
+            'sat': 13,
+            'ct': 257,
+            'effect': 'none',
+            'alert':'none',
+            'xy': [0.3852,0.3815]
+        }
+        expected_heat_request = {
+            't_cool':70.0,
+            'tmode':2,
             'hold':1
         }
         received_data = requests.get(lightsUrl + '/lastPUTMessage/1').json()
