@@ -103,7 +103,7 @@ class HouseCommandIntegrationTestCase(LiveServerTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json(), {'status': 'success'})
 
-        expected_other_light_request = {
+        expected_inside_light_request = {
             'on': False,
             'bri': 254,
             'hue': 19228,
@@ -128,8 +128,8 @@ class HouseCommandIntegrationTestCase(LiveServerTestCase):
             'tmode':1,
             'hold':1
         }
-        received_data = requests.get(lightsUrl + '/lastPUTMessage/1').json()
-        self.assertEqual(received_data, expected_other_light_request)
+        received_data = requests.get(lightsUrl + '/lastPUTMessage/4').json()
+        self.assertEqual(received_data, expected_inside_light_request)
 
         received_data = requests.get(lightsUrl + '/lastPUTMessage/2').json()
         self.assertEqual(received_data, expected_plant_light_request)
@@ -162,7 +162,7 @@ class HouseCommandIntegrationTestCase(LiveServerTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json(), {'status': 'success'})
 
-        expected_other_light_request = {
+        expected_indoor_light_request = {
             'on': False,
             'bri': 254,
             'hue': 19228,
@@ -187,8 +187,8 @@ class HouseCommandIntegrationTestCase(LiveServerTestCase):
             'tmode':2,
             'hold':1
         }
-        received_data = requests.get(lightsUrl + '/lastPUTMessage/1').json()
-        self.assertEqual(received_data, expected_other_light_request)
+        received_data = requests.get(lightsUrl + '/lastPUTMessage/4').json()
+        self.assertEqual(received_data, expected_indoor_light_request)
 
         received_data = requests.get(lightsUrl + '/lastPUTMessage/2').json()
         self.assertEqual(received_data, expected_plant_light_request)

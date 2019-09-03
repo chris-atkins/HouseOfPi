@@ -4,7 +4,7 @@ echo 'to do this run the following commands on the jenkins box:'
 echo '        apt-get install python3'
 echo '        apt-get install python-setuptools'
 echo '        apt-get install python-pip'
-echo '        easy_install virtualenv'
+echo '        apt-get install virtualenv'
 
 virtualenv -p python3 env
 env/bin/pip install --upgrade pip
