@@ -32,7 +32,7 @@ def get_thermostat_state():
     return json.dumps(returnObject)
 
 @app.route('/tstat/set-mock', methods=['POST'])
-def set_mock_thermostat_state_resonse():
+def set_mock_thermostat_state_response():
     global mockResponseToReturnForGetStatus
     print("saved response ", request.json)
     mockResponseToReturnForGetStatus = request.json

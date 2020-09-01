@@ -3,8 +3,9 @@ from test_server_setup import buildTestServer
 from test_server_setup import lightsUrl
 from test_server_setup import thermostatUrl
 from test_server_setup import authenticationSecret
-from flask_testing import LiveServerTestCase  # @UnresolvedImport
-import requests  # @UnresolvedImport
+from flask_testing import LiveServerTestCase
+import requests
+
 
 class HouseCommandIntegrationTestCase(LiveServerTestCase):
 

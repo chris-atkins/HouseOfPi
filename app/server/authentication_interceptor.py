@@ -1,3 +1,4 @@
+#!env/bin/python
 from functools import update_wrapper
 from flask import request, Response
 import requests
@@ -11,13 +12,13 @@ def authenticate(configuration):
         return passed_secret == expected_secret
 
     def send_unauthorized_access_text(request):
-        text_content = buildTestContext(request)
+        text_content = buildTextContext(request)
         url = configuration.get('MY_HOUSE_URL') + '/house/notification'
         post_data = {"messageContent": text_content}
         requests.post(url, json=post_data, verify=False)
 
 
-    def buildTestContext(request):
+    def buildTextContext(request):
         data = []
         data.append('method: ' + str(request.method))
         data.append('path: ' + str(request.path))
@@ -41,7 +42,6 @@ def authenticate(configuration):
         data.append('base_url: ' + str(request.base_url))
         data.append('url: ' + str(request.url))
         data.append('url_root: ' + str(request.url_root))
-        data.append('is_xhr: ' + str(request.is_xhr))
         data.append('blueprint: ' + str(request.blueprint))
         data.append('endpoint: ' + str(request.endpoint))
         data.append('json: ' + str(request.json))

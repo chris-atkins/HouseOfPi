@@ -80,4 +80,4 @@ class HouseOfPiTest(unittest.TestCase):
         pi = HouseOfPi(self.mock_gpio_factory)
         pi.blink_n_times_in_time(number_of_blinks = 1, seconds_to_blink = 0.1, channel = 13)
         self.assertTrue(self.mock_gpio.output.called)
-    
+

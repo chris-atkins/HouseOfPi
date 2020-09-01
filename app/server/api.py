@@ -1,9 +1,11 @@
 #!env/bin/python
-from flask import request, send_from_directory, jsonify  # @UnresolvedImport
-import requests  # @UnresolvedImport
+from flask import request, send_from_directory, jsonify
+import requests
 import os
 from app.server.authentication_interceptor import authenticate
 from app.server.house_command_request_creator import create_requests_for_mode
+from app.server.house_setting_translator import HouseSettingTranslator
+
 
 def initRoutes(app):
     
@@ -31,7 +33,7 @@ def initRoutes(app):
     
     @app.route('/wink', methods=['GET'])
     @authenticate(configuration=app.config)
-    def  winkEndpoint():
+    def winkEndpoint():
         app.hardware.blink_n_times_in_time(number_of_blinks=20, seconds_to_blink=2)
         return ';)'
     
@@ -47,7 +49,7 @@ def initRoutes(app):
 
     @app.route('/favicon.ico', methods=['GET'])
     def favicon():
-#         print(app.root_path)  - this has been a problem in the past - print this in some other endpoint - this doesn't print here if the file is not found
+        # print(app.root_path)  - this has been a problem in the past - print this in some other endpoint - this doesn't print here if the file is not found
         return send_from_directory(os.path.join(app.root_path, 'app/server/static'), 'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
     @app.route('/tstat', methods=['GET'])
@@ -63,6 +65,14 @@ def initRoutes(app):
         url = app.config.get('THERMOSTAT_URL') + '/tstat'
         response = requests.post(url, json=request.get_json(force=True))
         return jsonify(response.json())
+
+    @app.route('/house/setting', methods=['GET'])
+    @authenticate(configuration=app.config)
+    def get_house_setting():
+        url = app.config.get('THERMOSTAT_URL') + '/tstat'
+        thermostat_response = requests.get(url)
+        house_setting = HouseSettingTranslator().translate(thermostat_response.json())
+        return jsonify(house_setting)
 
     @app.route('/lights/state', methods=['PUT'])
     @authenticate(configuration=app.config)
