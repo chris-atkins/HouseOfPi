@@ -29,8 +29,9 @@ class HouseSettingIntegrationTest(LiveServerTestCase):
 
         expected_response = {
             "mode": "AC",
-            "temp_setting": 68,
             "current_temp": 69.5,
+            "temp_setting": 68,
+            "state": "AC_ON",
             "fan_on": True
         }
         self.assertEqual(expected_response, response.json())
@@ -51,8 +52,9 @@ class HouseSettingIntegrationTest(LiveServerTestCase):
 
         expected_response = {
             "mode": "FURNACE",
-            "temp_setting": 70.5,
             "current_temp": 69,
+            "temp_setting": 70.5,
+            "state": "HEAT_ON",
             "fan_on": True
         }
         self.assertEqual(expected_response, response.json())
