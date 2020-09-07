@@ -25,7 +25,7 @@ class HouseSettingIntegrationTest(LiveServerTestCase):
         }
         requests.post(thermostatUrl + "/tstat/set-mock", json=current_thermostat_readings)
 
-        response = requests.get(self.get_server_url() + '/house/setting', headers={'auth-secret': authenticationSecret})
+        response = requests.get(self.get_server_url() + '/house/status', headers={'auth-secret': authenticationSecret})
 
         expected_response = {
             "mode": "AC",
@@ -48,7 +48,7 @@ class HouseSettingIntegrationTest(LiveServerTestCase):
         }
         requests.post(thermostatUrl + "/tstat/set-mock", json=current_thermostat_readings)
 
-        response = requests.get(self.get_server_url() + '/house/setting', headers={'auth-secret': authenticationSecret})
+        response = requests.get(self.get_server_url() + '/house/status', headers={'auth-secret': authenticationSecret})
 
         expected_response = {
             "mode": "FURNACE",
@@ -60,5 +60,5 @@ class HouseSettingIntegrationTest(LiveServerTestCase):
         self.assertEqual(expected_response, response.json())
 
     def test_house_endpoint_requires_authentication_header_with_secret(self):
-        response = requests.get(self.get_server_url() + '/house/setting')
+        response = requests.get(self.get_server_url() + '/house/status')
         self.assertEqual(response.status_code, 401)

@@ -1,6 +1,6 @@
 import unittest
 
-from app.server.house_setting_translator import HouseSettingTranslator
+from app.server.house_status_translator import HouseStatusTranslator
 
 
 class HouseSettingTranslatorTest(unittest.TestCase):
@@ -13,7 +13,7 @@ class HouseSettingTranslatorTest(unittest.TestCase):
             "tstate": 2,
             "fstate": 1
         }
-        result = HouseSettingTranslator().translate(thermostat_json)
+        result = HouseStatusTranslator().translate(thermostat_json)
 
         expected = {
             "mode": "AC",
@@ -33,7 +33,7 @@ class HouseSettingTranslatorTest(unittest.TestCase):
             "tstate": 1,
             "fstate": 1
         }
-        result = HouseSettingTranslator().translate(thermostat_json)
+        result = HouseStatusTranslator().translate(thermostat_json)
 
         self.assertEqual(result["fan_on"], True)
 
@@ -45,7 +45,7 @@ class HouseSettingTranslatorTest(unittest.TestCase):
             "tstate": 2,
             "fstate": 0
         }
-        result = HouseSettingTranslator().translate(thermostat_json)
+        result = HouseStatusTranslator().translate(thermostat_json)
 
         self.assertEqual(result["fan_on"], False)
 
@@ -57,7 +57,7 @@ class HouseSettingTranslatorTest(unittest.TestCase):
             "tstate": 1,
             "fstate": 0
         }
-        result = HouseSettingTranslator().translate(thermostat_json)
+        result = HouseStatusTranslator().translate(thermostat_json)
 
         self.assertEqual(result["mode"], "OFF")
 
@@ -69,7 +69,7 @@ class HouseSettingTranslatorTest(unittest.TestCase):
             "tstate": 1,
             "fstate": 0
         }
-        result = HouseSettingTranslator().translate(thermostat_json)
+        result = HouseStatusTranslator().translate(thermostat_json)
 
         self.assertEqual(result["mode"], "FURNACE")
 
@@ -82,7 +82,7 @@ class HouseSettingTranslatorTest(unittest.TestCase):
             "tstate": 1,
             "fstate": 0
         }
-        result = HouseSettingTranslator().translate(thermostat_json)
+        result = HouseStatusTranslator().translate(thermostat_json)
 
         self.assertEqual(result["mode"], "AC")
 
@@ -94,7 +94,7 @@ class HouseSettingTranslatorTest(unittest.TestCase):
             "tstate": 1,
             "fstate": 0
         }
-        result = HouseSettingTranslator().translate(thermostat_json)
+        result = HouseStatusTranslator().translate(thermostat_json)
 
         self.assertEqual(result["mode"], "AUTO")
 
@@ -106,7 +106,7 @@ class HouseSettingTranslatorTest(unittest.TestCase):
             "tstate": 0,
             "fstate": 0
         }
-        result = HouseSettingTranslator().translate(thermostat_json)
+        result = HouseStatusTranslator().translate(thermostat_json)
 
         self.assertEqual(result["state"], "OFF")
 
@@ -118,7 +118,7 @@ class HouseSettingTranslatorTest(unittest.TestCase):
             "tstate": 1,
             "fstate": 0
         }
-        result = HouseSettingTranslator().translate(thermostat_json)
+        result = HouseStatusTranslator().translate(thermostat_json)
 
         self.assertEqual(result["state"], "HEAT_ON")
 
@@ -130,7 +130,7 @@ class HouseSettingTranslatorTest(unittest.TestCase):
             "tstate": 2,
             "fstate": 0
         }
-        result = HouseSettingTranslator().translate(thermostat_json)
+        result = HouseStatusTranslator().translate(thermostat_json)
 
         self.assertEqual(result["state"], "AC_ON")
 
@@ -142,7 +142,7 @@ class HouseSettingTranslatorTest(unittest.TestCase):
             "tstate": 2,
             "fstate": 0
         }
-        result = HouseSettingTranslator().translate(thermostat_json)
+        result = HouseStatusTranslator().translate(thermostat_json)
 
         self.assertEqual(result["current_temp"], 69.5)
 
@@ -154,7 +154,7 @@ class HouseSettingTranslatorTest(unittest.TestCase):
             "tstate": 2,
             "fstate": 0
         }
-        result = HouseSettingTranslator().translate(thermostat_json)
+        result = HouseStatusTranslator().translate(thermostat_json)
 
         self.assertEqual(result["current_temp"], 69)
 
@@ -166,7 +166,7 @@ class HouseSettingTranslatorTest(unittest.TestCase):
             "tstate": 2,
             "fstate": 0
         }
-        result = HouseSettingTranslator().translate(thermostat_json)
+        result = HouseStatusTranslator().translate(thermostat_json)
 
         self.assertEqual(result["temp_setting"], 70.3)
 
@@ -178,7 +178,7 @@ class HouseSettingTranslatorTest(unittest.TestCase):
             "tstate": 2,
             "fstate": 0
         }
-        result = HouseSettingTranslator().translate(thermostat_json)
+        result = HouseStatusTranslator().translate(thermostat_json)
 
         self.assertEqual(result["temp_setting"], 70.5)
 

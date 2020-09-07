@@ -1,7 +1,7 @@
 #!env/bin/python
 
 
-class HouseSettingTranslator(object):
+class HouseStatusTranslator(object):
 
     def translate(self, thermostat_json):
         mode = self.translate_mode(thermostat_json["tmode"])

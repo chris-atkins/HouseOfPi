@@ -4,7 +4,7 @@ import requests
 import os
 from app.server.authentication_interceptor import authenticate
 from app.server.house_command_request_creator import create_requests_for_mode
-from app.server.house_setting_translator import HouseSettingTranslator
+from app.server.house_status_translator import HouseStatusTranslator
 
 
 def initRoutes(app):
@@ -66,13 +66,13 @@ def initRoutes(app):
         response = requests.post(url, json=request.get_json(force=True))
         return jsonify(response.json())
 
-    @app.route('/house/setting', methods=['GET'])
+    @app.route('/house/status', methods=['GET'])
     @authenticate(configuration=app.config)
-    def get_house_setting():
+    def get_house_status():
         url = app.config.get('THERMOSTAT_URL') + '/tstat'
         thermostat_response = requests.get(url)
-        house_setting = HouseSettingTranslator().translate(thermostat_response.json())
-        return jsonify(house_setting)
+        house_status = HouseStatusTranslator().translate(thermostat_response.json())
+        return jsonify(house_status)
 
     @app.route('/lights/state', methods=['PUT'])
     @authenticate(configuration=app.config)
