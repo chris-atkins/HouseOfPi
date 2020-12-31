@@ -16,7 +16,7 @@ app = Server(__name__, hardware)
 app.config.update(dict(
     MY_HOUSE_URL='https://poorknight.com',
     THERMOSTAT_URL='http://10.0.0.114',
-    LIGHTS_URL='http://10.0.0.196',
+    LIGHTS_URL='http://192.168.1.199',
     IP_ADDRESS_URL='https://api.ipify.org',
     SECONDS_BETWEEN_IP_REPORTS='300',
     AUTHENTICATION_SECRET=os.environ.get('AUTHENTICATION_SECRET')
