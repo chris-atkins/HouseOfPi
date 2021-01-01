@@ -26,7 +26,25 @@ def create_requests_for_mode(mode, app_config):
         request = HouseRequest(url, body, 'put')
         return [request]
 
-    if mode == 'outside-lights-on':
+    elif mode == 'basement-dim':
+        url = app_config.get('LIGHTS_URL') + group_path(group='8')
+        body = build_light_request_body(on=True, brightness=73)
+        request = HouseRequest(url, body, 'put')
+        return [request]
+
+    elif mode == 'basement-on':
+        url = app_config.get('LIGHTS_URL') + group_path(group='8')
+        body = build_light_request_body(on=True)
+        request = HouseRequest(url, body, 'put')
+        return [request]
+
+    elif mode == 'basement-off':
+        url = app_config.get('LIGHTS_URL') + group_path(group='8')
+        body = build_light_request_body(on=False)
+        request = HouseRequest(url, body, 'put')
+        return [request]
+
+    elif mode == 'outside-lights-on':
         url = app_config.get('LIGHTS_URL') + group_path(group='3')
         body = build_light_request_body(on=True)
         request = HouseRequest(url, body, 'put')

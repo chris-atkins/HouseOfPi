@@ -140,7 +140,6 @@ def initRoutes(app):
         }
         return jsonify(response)
 
-
     def handle_temp_down_with_furnace_on(house_temp):
         temp_to_set = house_temp - 2
         heat_request = {
@@ -158,7 +157,6 @@ def initRoutes(app):
             "target-temp": temp_to_set
         }
         return jsonify(response)
-
 
     def handle_house_temp_up():
         url = app.config.get('THERMOSTAT_URL') + '/tstat'
@@ -196,7 +194,6 @@ def initRoutes(app):
             "target-temp": temp_to_set
         }
         return jsonify(response)
-
 
     def handle_temp_up_with_ac_on(house_temp):
         temp_to_set = house_temp + 2
