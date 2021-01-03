@@ -36,3 +36,8 @@ class MyTestCase(unittest.TestCase):
         response = self.app.put('/house/command', json={"command": "dim-lights"}, headers={'auth-secret': authenticationSecret})
         self.assertEqual(response.status, '200 OK')
         self.assertEqual(MockWemo.last_brightness, 25)
+
+    def test_command_with_dining_lights_bright_includes_setting_wemo(self):
+        response = self.app.put('/house/command', json={"command": "dining-lights-bright"}, headers={'auth-secret': authenticationSecret})
+        self.assertEqual(response.status, '200 OK')
+        self.assertEqual(MockWemo.last_brightness, 100)

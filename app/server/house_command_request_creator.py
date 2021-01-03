@@ -35,6 +35,10 @@ def create_requests_for_mode(mode, app_config):
 
         return [request, wemo_request]
 
+    elif mode == 'dining-lights-bright':
+        wemo_request = HouseRequest(url=None, body=100, request_type='wemo')
+        return [wemo_request]
+
     elif mode == 'basement-dim':
         url = app_config.get('LIGHTS_URL') + group_path(group='8')
         body = build_light_request_body(on=True, brightness=73)
