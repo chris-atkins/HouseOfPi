@@ -12,19 +12,28 @@ def create_requests_for_mode(mode, app_config):
         url = app_config.get('LIGHTS_URL') + group_path(group='4')
         body = build_light_request_body(on=True)
         request = HouseRequest(url, body, 'put')
-        return [request]
+
+        wemo_request = HouseRequest(url=None, body=70, request_type='wemo')
+
+        return [request, wemo_request]
 
     elif mode == 'dim-lights':
         url = app_config.get('LIGHTS_URL') + group_path(group='4')
         body = build_light_request_body(on=True, brightness=73)
         request = HouseRequest(url, body, 'put')
-        return [request]
+
+        wemo_request = HouseRequest(url=None, body=25, request_type='wemo')
+
+        return [request, wemo_request]
 
     elif mode == 'lights-off':
         url = app_config.get('LIGHTS_URL') + group_path(group='4')
         body = build_light_request_body(on=False)
         request = HouseRequest(url, body, 'put')
-        return [request]
+
+        wemo_request = HouseRequest(url=None, body=0, request_type='wemo')
+
+        return [request, wemo_request]
 
     elif mode == 'basement-dim':
         url = app_config.get('LIGHTS_URL') + group_path(group='8')

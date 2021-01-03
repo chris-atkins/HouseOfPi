@@ -3,9 +3,10 @@ from flask import Flask  # @UnresolvedImport
 
 class Server(Flask):
 
-    def __init__(self, name, hardwareInterface):
+    def __init__(self, name, hardwareInterface, wemoDevices=[]):
         super(Server, self).__init__(name)
         self.hardware = hardwareInterface
+        self.wemoDevices = wemoDevices
 
     def run(self, host=None, port=None, debug=None, **options):
         self.init_hardware()

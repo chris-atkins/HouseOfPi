@@ -98,7 +98,7 @@ class HouseCommandIntegrationTestCase(LiveServerTestCase):
         received_data = requests.get(lightsUrl + '/lastPUTMessage/8').json()
         self.assertEqual(received_data, expected_sent_request)
 
-    def test_house_mode_basement_of_sends_correct_request_to_hue(self):
+    def test_house_mode_basement_off_sends_correct_request_to_hue(self):
         request_json = {'command': 'basement-off'}
         response = requests.put(self.get_server_url() + '/house/command', json=request_json, headers={'auth-secret': authenticationSecret})
         self.assertEqual(response.status_code, 200)

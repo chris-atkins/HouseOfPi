@@ -12,6 +12,9 @@ env/bin/pip install --upgrade pip
 env/bin/pip install flask
 env/bin/pip install requests
 env/bin/pip install Flask-APScheduler
+env/bin/pip install ifaddr
+env/bin/pip install lxml
+env/bin/pip install pywemo
 
 if [ "$(uname)" != "Darwin" ]; then
 	env/bin/pip install rpi.gpio

@@ -5,13 +5,15 @@ from app.server.api import initRoutes
 from app.server.scheduled_jobs import init_scheduled_jobs
 from app.hardware.house_of_pi import HouseOfPi
 from app.hardware.gpio_factory import GPIOFactory
+import pywemo
 
 debugOn = os.environ.get('PYTHON_DEBUG_ON')
 sslOn = os.environ.get('PYTHON_SSL_ON')
 
+wemoDevices = pywemo.discover_devices()
 gpioFactory = GPIOFactory()
 hardware = HouseOfPi(gpioFactory)
-app = Server(__name__, hardware)
+app = Server(__name__, hardware, wemoDevices)
 
 app.config.update(dict(
     MY_HOUSE_URL='https://poorknight.com',
