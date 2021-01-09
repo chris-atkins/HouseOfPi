@@ -57,6 +57,18 @@ def create_requests_for_mode(mode, app_config):
         request = HouseRequest(url, body, 'put')
         return [request]
 
+    elif mode == 'bedroom-on':
+        url = app_config.get('LIGHTS_URL') + group_path(group='5')
+        body = build_light_request_body(on=True)
+        request = HouseRequest(url, body, 'put')
+        return [request]
+
+    elif mode == 'bedroom-off':
+        url = app_config.get('LIGHTS_URL') + group_path(group='5')
+        body = build_light_request_body(on=False)
+        request = HouseRequest(url, body, 'put')
+        return [request]
+
     elif mode == 'outside-lights-on':
         url = app_config.get('LIGHTS_URL') + group_path(group='3')
         body = build_light_request_body(on=True)
