@@ -66,7 +66,7 @@ class HouseCommandIntegrationTestCase(LiveServerTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json(), {'status': 'success'})
 
-        expected_sent_request = {
+        expected_dim_request = {
             'on': True,
             'bri': 73,
             'hue': 19228,
@@ -76,8 +76,20 @@ class HouseCommandIntegrationTestCase(LiveServerTestCase):
             'alert': 'none',
             'xy': [0.3852, 0.3815]
         }
-        received_data = requests.get(lightsUrl + '/lastPUTMessage/8').json()
-        self.assertEqual(received_data, expected_sent_request)
+        expected_off_request = {
+            'on': False,
+            'bri': 73,
+            'hue': 19228,
+            'sat': 13,
+            'ct': 257,
+            'effect': 'none',
+            'alert': 'none',
+            'xy': [0.3852, 0.3815]
+        }
+        received_data = requests.get(lightsUrl + '/lastPUTMessage/11').json()
+        self.assertEqual(received_data, expected_dim_request)
+        received_data = requests.get(lightsUrl + '/lastPUTMessage/10').json()
+        self.assertEqual(received_data, expected_off_request)
 
     def test_house_mode_basement_on_sends_correct_request_to_hue(self):
         request_json = {'command': 'basement-on'}
