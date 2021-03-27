@@ -73,6 +73,18 @@ def create_requests_for_mode(mode, app_config):
         request = HouseRequest(url, body, 'put')
         return [request]
 
+    elif mode == 'fancy-light-on':
+        url = app_config.get('LIGHTS_URL') + group_path(group='13')
+        body = build_light_request_body(on=True)
+        request = HouseRequest(url, body, 'put')
+        return [request]
+
+    elif mode == 'fancy-light-off':
+        url = app_config.get('LIGHTS_URL') + group_path(group='13')
+        body = build_light_request_body(on=False)
+        request = HouseRequest(url, body, 'put')
+        return [request]
+
     elif mode == 'outside-lights-on':
         url = app_config.get('LIGHTS_URL') + group_path(group='3')
         body = build_light_request_body(on=True)
@@ -119,7 +131,7 @@ def group_path(group):
     return '/api/6b1abf1f6e7157cc3843ee8b668d32d/groups/' + group + '/action'
 
 
-def build_light_request_body(on,brightness=254):
+def build_light_request_body(on, brightness=254):
     return {
         'on': on,
         'bri': brightness,
