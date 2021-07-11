@@ -18,7 +18,7 @@ app = Server(__name__, hardware, wemoDevices)
 app.config.update(dict(
     MY_HOUSE_URL='https://poorknight.com',
     THERMOSTAT_URL='http://10.0.0.114',
-    LIGHTS_URL='http://192.168.1.2',
+    LIGHTS_URL='http://192.168.1.19',
     IP_ADDRESS_URL='https://api.ipify.org',
     SECONDS_BETWEEN_IP_REPORTS='300',
     AUTHENTICATION_SECRET=os.environ.get('AUTHENTICATION_SECRET')
