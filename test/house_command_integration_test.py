@@ -205,6 +205,44 @@ class HouseCommandIntegrationTestCase(LiveServerTestCase):
         received_data = requests.get(lightsUrl + '/lastPUTMessage/13').json()
         self.assertEqual(received_data, expected_sent_request)
 
+    def test_house_mode_plant_lights_on_sends_correct_request_to_hue(self):
+        request_json = {'command': 'plant-lights-on'}
+        response = requests.put(self.get_server_url() + '/house/command', json=request_json, headers={'auth-secret': authenticationSecret})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), {'status': 'success'})
+
+        expected_sent_request = {
+            'on': True,
+            'bri': 254,
+            'hue': 19228,
+            'sat': 13,
+            'ct': 257,
+            'effect': 'none',
+            'alert': 'none',
+            'xy': [0.3852, 0.3815]
+        }
+        received_data = requests.get(lightsUrl + '/lastPUTMessage/14').json()
+        self.assertEqual(received_data, expected_sent_request)
+
+    def test_house_mode_plant_lights_off_sends_correct_request_to_hue(self):
+        request_json = {'command': 'plant-lights-off'}
+        response = requests.put(self.get_server_url() + '/house/command', json=request_json, headers={'auth-secret': authenticationSecret})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), {'status': 'success'})
+
+        expected_sent_request = {
+            'on': False,
+            'bri': 254,
+            'hue': 19228,
+            'sat': 13,
+            'ct': 257,
+            'effect': 'none',
+            'alert': 'none',
+            'xy': [0.3852, 0.3815]
+        }
+        received_data = requests.get(lightsUrl + '/lastPUTMessage/14').json()
+        self.assertEqual(received_data, expected_sent_request)
+
     def test_house_mode_lights_off_sends_correct_request_to_hue(self):
         request_json = {'command': 'lights-off'}
         response = requests.put(self.get_server_url() + '/house/command', json=request_json, headers={'auth-secret': authenticationSecret})
