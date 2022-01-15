@@ -175,7 +175,7 @@ class HouseCommandIntegrationTestCase(LiveServerTestCase):
 
         expected_sent_request = {
             'on': True,
-            'bri': 254,
+            'bri': 128,
             'hue': 19228,
             'sat': 13,
             'ct': 257,

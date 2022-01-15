@@ -75,7 +75,7 @@ def create_requests_for_mode(mode, app_config):
 
     elif mode == 'fancy-light-on':
         url = app_config.get('LIGHTS_URL') + group_path(group='13')
-        body = build_light_request_body(on=True)
+        body = build_light_request_body(on=True, brightness=128)
         request = HouseRequest(url, body, 'put')
         return [request]
 
