@@ -4,6 +4,7 @@ import unittest
 from mock import MagicMock
 from mock import call
 from mock import patch
+import time
 
 class HouseOfPiTest(unittest.TestCase):
 
@@ -79,5 +80,6 @@ class HouseOfPiTest(unittest.TestCase):
     def test_wink_display_calls_gpio(self):
         pi = HouseOfPi(self.mock_gpio_factory)
         pi.blink_n_times_in_time(number_of_blinks = 1, seconds_to_blink = 0.1, channel = 13)
+        time.sleep(.5)
         self.assertTrue(self.mock_gpio.output.called)
 

@@ -44,7 +44,8 @@ def authenticate(configuration):
         data.append('url_root: ' + str(request.url_root))
         data.append('blueprint: ' + str(request.blueprint))
         data.append('endpoint: ' + str(request.endpoint))
-        data.append('json: ' + str(request.json))
+        if request.method != 'GET':
+            data.append('json: ' + str(request.json))
         data.append('max_content_length: ' + str(request.max_content_length))
         data.append('routing_exception: ' + str(request.routing_exception))
         data.append('url_rule: ' + str(request.url_rule))
