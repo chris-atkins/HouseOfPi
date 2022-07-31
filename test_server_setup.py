@@ -33,7 +33,7 @@ def buildTestServer(track_gpio_calls = False,
                     secondsBetweenIpReports=secondsBetweenIpReports,
                     authenticationSecret=authenticationSecret,
                     motion_sensing_cycle_time=.1,
-                    wemoDevices=[MockWemo()]):
+                    wemoDevices=[]):
 
     if gpioFactory == None:
         gpioFactory = GPIOTestFactory(track_gpio_calls = track_gpio_calls)

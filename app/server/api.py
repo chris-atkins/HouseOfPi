@@ -101,7 +101,8 @@ def initRoutes(app):
             elif house_request.request_type == 'post':
                 requests.post(house_request.url, json=house_request.body)
             elif house_request.request_type == 'wemo':
-                app.wemoDevices[0].set_brightness(house_request.body)
+                for wemo in app.wemoDevices:
+                    wemo.set_brightness(house_request.body)
 
         return jsonify({'status': 'success'})
 
