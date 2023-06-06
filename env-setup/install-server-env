@@ -9,7 +9,12 @@ echo '        apt-get install python3-venv'
 echo '        apt-get install libxml2-dev libxslt-dev python-dev'
 echo '        apt-get install python3-lxml python-lxml'
 
-python3.9 -m venv env
+
+if [ "$(uname)" != "Darwin" ]; then
+	python3.9 -m venv env
+else
+  python -m venv env
+fi
 env/bin/python --version
 env/bin/python -m pip install --upgrade pip
 env/bin/python -m pip install wheel
