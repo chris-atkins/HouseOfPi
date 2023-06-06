@@ -4,6 +4,7 @@ from flask_testing import LiveServerTestCase  # @UnresolvedImport
 from mock_services.test_gpio import GPIOTestFactory
 import time
 
+
 class BlinkOnMotionTest(LiveServerTestCase):
 
     def create_app(self):

@@ -24,7 +24,7 @@ class MockWemo(object):
         return MockWemo.last_brightness
 
 
-def buildTestServer(track_gpio_calls = False,
+def buildTestServer(track_gpio_calls=False,
                     gpioFactory=None,
                     myHouseUrl=myHouseUrl,
                     thermostatUrl=thermostatUrl,
@@ -46,10 +46,10 @@ def buildTestServer(track_gpio_calls = False,
     testApp.config['THERMOSTAT_URL'] = thermostatUrl
     testApp.config['LIGHTS_URL'] = lightsUrl
     testApp.config['IP_ADDRESS_URL'] = ipAddressUrl
-    testApp.config['SECONDS_BETWEEN_IP_REPORTS'] =secondsBetweenIpReports
+    testApp.config['SECONDS_BETWEEN_IP_REPORTS'] = secondsBetweenIpReports
     testApp.config['AUTHENTICATION_SECRET'] = authenticationSecret
 
     initRoutes(testApp)
     init_scheduled_jobs(testApp.config)
-    
+
     return testApp

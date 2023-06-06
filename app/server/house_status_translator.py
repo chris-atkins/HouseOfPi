@@ -4,11 +4,11 @@
 class HouseStatusTranslator(object):
 
     def translate(self, thermostat_json):
-        mode = self.translate_mode(thermostat_json["tmode"])
+        mode = self.translate_mode(thermostat_json["mode"])
         temp_setting = self.find_temp_setting(thermostat_json)
-        current_temp = thermostat_json["temp"]
-        fan_on = self.translate_fan_on(thermostat_json["fstate"])
-        state = self.translate_state(thermostat_json["tstate"])
+        current_temp = thermostat_json["spacetemp"]
+        fan_on = self.translate_fan_on(thermostat_json["fanstate"])
+        state = self.translate_state(thermostat_json["state"])
 
         return {
             "mode": mode,
@@ -19,35 +19,39 @@ class HouseStatusTranslator(object):
         }
 
     def find_temp_setting(self, thermostat_json):
-        if "t_cool" in thermostat_json:
-            return thermostat_json["t_cool"]
-        if "t_heat" in thermostat_json:
-            return thermostat_json["t_heat"]
-        return "UNKNOWN"
+        mode = self.translate_mode(thermostat_json["mode"])
+        if mode == "FURNACE":
+            return thermostat_json["heattemp"]
+
+        return thermostat_json["cooltemp"]
 
     def translate_mode(self, value):
-        if value is 0:
+        if value == 0:
             return "OFF"
-        if value is 1:
+        if value == 1:
             return "FURNACE"
-        if value is 2:
+        if value == 2:
             return "AC"
-        if value is 3:
+        if value == 3:
             return "AUTO"
         return "UNKNOWN"
 
     def translate_fan_on(self, value):
-        if value is 0:
+        if value == 0:
             return False
-        if value is 1:
+        if value == 1:
             return True
         return "UNKNOWN"
 
     def translate_state(self, value):
-        if value is 0:
+        if value == 0:
             return "OFF"
-        if value is 1:
+        if value == 1:
             return "HEAT_ON"
-        if value is 2:
+        if value == 2:
             return "AC_ON"
+        if value == 3:
+            return "LOCKOUT"
+        if value == 4:
+            return "ERROR"
         return "UNKNOWN"

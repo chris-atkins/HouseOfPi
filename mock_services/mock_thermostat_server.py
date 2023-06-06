@@ -13,7 +13,9 @@ app.config.from_envvar('FLASKR_SETTINGS', silent=True)
 
 lastThermostatPostRequest = None
 mockResponseToReturnForGetStatus = None
+mockResponseToReturnForNewGetStatus = None
 thermostatGetCount = 0
+newThermostatGetCount = 0
 
 @app.route('/', methods=['GET'])
 def server_is_up():
@@ -38,6 +40,25 @@ def set_mock_thermostat_state_response():
     mockResponseToReturnForGetStatus = request.json
     return Response(status=200)
 
+@app.route('/query/info', methods=['GET'])
+def get_new_thermostat_state():
+    global newThermostatGetCount
+    global mockResponseToReturnForNewGetStatus
+    newThermostatGetCount += 1
+    returnObject = {"message": "thermostat stub GET response"}
+    print("got a request and mock response is set to ", mockResponseToReturnForNewGetStatus)
+    if mockResponseToReturnForNewGetStatus is not None:
+        returnObject = mockResponseToReturnForNewGetStatus
+        mockResponseToReturnForNewGetStatus = None
+    return json.dumps(returnObject)
+
+@app.route('/query/info/set-mock', methods=['POST'])
+def set_new_mock_thermostat_state_response():
+    global mockResponseToReturnForNewGetStatus
+    print("saved response ", request.json)
+    mockResponseToReturnForNewGetStatus = request.json
+    return Response(status=200)
+
 @app.route('/tstat', methods=['POST'])
 def post_thermostat_state():
     global lastThermostatPostRequest
@@ -50,6 +71,13 @@ def get_last_temp_check_request():
     global thermostatGetCount
     return_object = {"count": thermostatGetCount}
     thermostatGetCount = 0
+    return json.dumps(return_object)
+
+@app.route('/countNewGETMessages', methods=['GET'])
+def get_last_new_temp_check_request():
+    global newThermostatGetCount
+    return_object = {"count": newThermostatGetCount}
+    newThermostatGetCount = 0
     return json.dumps(return_object)
 
 @app.route('/lastPOSTMessage', methods=['GET'])

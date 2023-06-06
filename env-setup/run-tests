@@ -10,7 +10,8 @@ else
 fi
 
 echo 'running tests'
-env/bin/py.test ./test -srw
+#env/bin/pytest ./test -srw
+env/bin/pytest ./test
 
 echo 'shutting down mock server'
 ./env-setup/stop-mock-servers

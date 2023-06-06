@@ -3,4 +3,10 @@ echo 'this script assumes that the jenkins machine (or container) has killall al
 echo 'to do this run the following commands on the jenkins box:'
 echo '        apt-get install psmisc'
 
-killall python
+if [ "$(uname)" == "Darwin" ]; then
+	echo 'on Mac - running: killall Python'
+  killall Python
+else
+	echo 'on non-Mac - running: killall python'
+    killall python
+fi

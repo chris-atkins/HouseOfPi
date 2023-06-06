@@ -52,24 +52,24 @@ def initRoutes(app):
         # print(app.root_path)  - this has been a problem in the past - print this in some other endpoint - this doesn't print here if the file is not found
         return send_from_directory(os.path.join(app.root_path, 'app/server/static'), 'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
-    @app.route('/tstat', methods=['GET'])
-    @authenticate(configuration=app.config)
-    def get_thermostat_state():
-        url = app.config.get('THERMOSTAT_URL') + '/tstat'
-        response = requests.get(url)
-        return jsonify(response.json())
-
-    @app.route('/tstat', methods=['POST'])
-    @authenticate(configuration=app.config)
-    def set_thermostat_state():
-        url = app.config.get('THERMOSTAT_URL') + '/tstat'
-        response = requests.post(url, json=request.get_json(force=True))
-        return jsonify(response.json())
+    # @app.route('/tstat', methods=['GET'])
+    # @authenticate(configuration=app.config)
+    # def get_thermostat_state():
+    #     url = app.config.get('THERMOSTAT_URL') + '/tstat'
+    #     response = requests.get(url)
+    #     return jsonify(response.json())
+    #
+    # @app.route('/tstat', methods=['POST'])
+    # @authenticate(configuration=app.config)
+    # def set_thermostat_state():
+    #     url = app.config.get('THERMOSTAT_URL') + '/tstat'
+    #     response = requests.post(url, json=request.get_json(force=True))
+    #     return jsonify(response.json())
 
     @app.route('/house/status', methods=['GET'])
     @authenticate(configuration=app.config)
     def get_house_status():
-        url = app.config.get('THERMOSTAT_URL') + '/tstat'
+        url = app.config.get('THERMOSTAT_URL') + '/query/info'
         thermostat_response = requests.get(url)
         house_status = HouseStatusTranslator().translate(thermostat_response.json())
         return jsonify(house_status)
