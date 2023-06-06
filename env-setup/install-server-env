@@ -11,9 +11,9 @@ echo '        apt-get install python3-lxml python-lxml'
 
 
 if [ "$(uname)" != "Darwin" ]; then
-	python3.9 -m venv env
-else
   python -m venv env
+else
+	python3.9 -m venv env
 fi
 env/bin/python --version
 env/bin/python -m pip install --upgrade pip
