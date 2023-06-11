@@ -1,5 +1,5 @@
 #!env/bin/python
-from flask import request, send_from_directory, jsonify
+from flask import request, send_from_directory, jsonify, Response
 import requests
 import os
 from app.server.authentication_interceptor import authenticate
@@ -74,6 +74,44 @@ def initRoutes(app):
         house_status = HouseStatusTranslator().translate(thermostat_response.json())
         return jsonify(house_status)
 
+    @app.route('/thermostat/state', methods=['POST'])
+    @authenticate(configuration=app.config)
+    def set_house_temp():
+        # request = {
+        #     targetTemp: 34,
+        #     mode: CURRENT || HEAT || COOL
+        # }
+
+        requested_mode = request.get_json()['mode']
+        requested_temp = request.get_json()['targetTemp']
+
+        thermostat_response = requests.get(app.config.get('THERMOSTAT_URL') + '/query/info')
+        current_status = thermostat_response.json()
+
+        new_heat = current_status['heattemp']
+        new_cool = current_status['cooltemp']
+        new_mode = current_status['mode']
+
+        if requested_mode == 'HEAT' or (requested_mode == 'CURRENT' and new_mode == 1):
+            new_heat = requested_temp
+        if requested_mode == 'COOL' or (requested_mode == 'CURRENT' and new_mode == 2):
+            new_cool = requested_temp
+
+        if requested_mode == 'HEAT':
+            new_mode = 1
+        if requested_mode == 'COOL':
+            new_mode = 2
+
+        params = {
+            'mode': new_mode,
+            'heattemp': new_heat,
+            'cooltemp': new_cool
+        }
+        url = app.config.get('THERMOSTAT_URL') + '/control'
+        headers = {'Content-Type': 'application/x-www-form-urlencoded'}
+        response = requests.post(url, data=params, headers=headers)
+        return Response(status=response.status_code)
+
     @app.route('/lights/state', methods=['PUT'])
     @authenticate(configuration=app.config)
     def set_lights_state():
@@ -92,6 +130,12 @@ def initRoutes(app):
             return handle_house_temp_up()
         if mode == "at-work-mode":
             mode = translate_at_work_mode()
+
+        #TODO
+        # if mode == "night-time"
+        #     return dostuff()
+        # if mode == "morning"
+        #     return dostuff()
 
         house_requests = create_requests_for_mode(mode=mode, app_config=app.config)
 
@@ -113,7 +157,7 @@ def initRoutes(app):
         house_mode = current_thermostat_settings["tmode"]
         house_temp = current_thermostat_settings["temp"]
 
-        if house_mode is 2:
+        if house_mode == 2:
             return handle_temp_down_with_ac_on(house_temp)
         else:
             return handle_temp_down_with_furnace_on(house_temp)
@@ -168,7 +212,7 @@ def initRoutes(app):
         house_mode = current_thermostat_settings["tmode"]
         house_temp = current_thermostat_settings["temp"]
 
-        if house_mode is 1:
+        if house_mode == 1:
             return handle_temp_up_with_furnace_on(house_temp)
         else:
             return handle_temp_up_with_ac_on(house_temp)
@@ -222,7 +266,7 @@ def initRoutes(app):
 
         house_mode = current_thermostat_settings["tmode"]
 
-        if house_mode is 1:
+        if house_mode == 1:
             return "at-work-mode-furnace"
         else:
             return "at-work-mode-ac"

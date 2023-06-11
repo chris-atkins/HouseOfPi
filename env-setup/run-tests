@@ -1,17 +1,17 @@
 #!/bin/sh
 
-echo 'starting mock server'
-if [ "$(uname)" == "Darwin" ]; then
-	echo 'on Mac - running: ./env-setup/run-mock-servers &'
-    ./env-setup/run-mock-servers &
-else
-	echo 'on non-Mac - running: setsid ./env-setup/run-mock-servers < /dev/zero &> mock-server-log.txt &'
-    setsid ./env-setup/run-mock-servers < /dev/zero &> mock-server-log.txt &
-fi
+#echo 'starting mock server'
+#if [ "$(uname)" == "Darwin" ]; then
+#	echo 'on Mac - running: ./env-setup/run-mock-servers &'
+#    ./env-setup/run-mock-servers &
+#else
+#	echo 'on non-Mac - running: setsid ./env-setup/run-mock-servers < /dev/zero &> mock-server-log.txt &'
+#    setsid ./env-setup/run-mock-servers < /dev/zero &> mock-server-log.txt &
+#fi
 
 echo 'running tests'
 #env/bin/pytest ./test -srw
 env/bin/pytest ./test
 
-echo 'shutting down mock server'
-./env-setup/stop-mock-servers
+#echo 'shutting down mock server'
+#./env-setup/stop-mock-servers
