@@ -9,7 +9,7 @@ import requests  # @UnresolvedImport
 class ThermostatIntegrationTestCase(LiveServerTestCase):
 
     def create_app(self):
-        requests.get(thermostatUrl + '/countGETMessages', headers={'auth-secret': authenticationSecret}) #resets the count so previous tests don't interfere
+        requests.get(thermostatUrl + '/countGETMessages')  # resets the count so previous tests don't interfere
         return buildTestServer()
 
     def test_mock_service_is_up(self):

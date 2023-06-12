@@ -5,11 +5,13 @@ import os
 from app.server.authentication_interceptor import authenticate
 from app.server.house_command_request_creator import create_requests_for_mode
 from app.server.house_status_translator import HouseStatusTranslator
+from app.server.utils.endpoints import listEndpoints
 
 
+# noinspection PyPep8Naming
 def initRoutes(app):
     
-    hiName = ''
+    hi_name = ''
 
     @app.route('/')
     def hello_world():
@@ -17,34 +19,35 @@ def initRoutes(app):
         return 'Hi there!'
     
     @app.route('/hi', methods=['POST'])
-    def hiEndpoint():
-        global hiName
-        hiName = request.json.get('name')
+    def hi_endpoint():
+        # noinspection PyGlobalUndefined
+        global hi_name
+        hi_name = request.json.get('name')
         return 'ok' 
         
     @app.route('/hi', methods=['GET'])
-    def getHi():
-        print('hiName: ' + hiName)
-        return 'Hi ' + hiName
+    def get_hi():
+        print('hiName: ' + hi_name)
+        return 'Hi ' + hi_name
     
     @app.route('/endpoints', methods=['GET'])
-    def listEndpoints():
+    def list_endpoints():
         return str(listEndpoints(app))
     
     @app.route('/wink', methods=['GET'])
     @authenticate(configuration=app.config)
-    def winkEndpoint():
+    def wink_endpoint():
         app.hardware.blink_n_times_in_time(number_of_blinks=20, seconds_to_blink=2)
         return ';)'
     
     @app.route('/textMe', methods=['GET'])
     @authenticate(configuration=app.config)
-    def textMe():
-        #     http://stackoverflow.com/questions/17301938/making-a-request-to-a-restful-api-using-python
+    def text_me():
+        # http://stackoverflow.com/questions/17301938/making-a-request-to-a-restful-api-using-python
         url = app.config.get('MY_HOUSE_URL') + '/house/notification'
-        postData = {"messageContent": "Raspberry Pi says hi and would like to inform you that it was asked to send you a message."}
+        post_data = {"messageContent": "Raspberry Pi says hi and would like to inform you that it was asked to send you a message."}
         
-        response = requests.post(url, json=postData, verify=False)
+        response = requests.post(url, json=post_data, verify=False)
         return response.json()['message']
 
     @app.route('/favicon.ico', methods=['GET'])
@@ -110,8 +113,10 @@ def initRoutes(app):
     def set_house():
         mode = request.get_json()['command']
 
-        thermostat_response = requests.get(app.config.get('THERMOSTAT_URL') + '/query/info')
-        thermostat_status = thermostat_response.json()
+        thermostat_status = None
+        if mode in ['house-temp-down', 'house-temp-up', 'at-work-mode']:
+            thermostat_response = requests.get(app.config.get('THERMOSTAT_URL') + '/query/info')
+            thermostat_status = thermostat_response.json()
 
         if mode == "house-temp-down":
             return handle_house_temp_down(thermostat_status)
@@ -120,7 +125,7 @@ def initRoutes(app):
         if mode == "at-work-mode":
             mode = translate_at_work_mode(thermostat_status)
 
-        #TODO
+        # TODO - but in the request creator is the right place
         # if mode == "night-time"
         #     return dostuff()
         # if mode == "morning"
@@ -196,7 +201,6 @@ def initRoutes(app):
 
     def handle_house_temp_up(thermostat_status):
         house_mode = thermostat_status["mode"]
-        house_temp = thermostat_status["spacetemp"]
 
         if house_mode == 1:
             return handle_temp_up_with_furnace_on(thermostat_status)
@@ -209,7 +213,7 @@ def initRoutes(app):
         if house_temp >= 72:
             result = "no-change"
 
-        temp_to_set = round(house_temp - .0005 + 2) # round down so we only do a 1.5 increment, not 2.5
+        temp_to_set = round(house_temp - .0005 + 2)  # round down so we only do a 1.5 increment, not 2.5
         if temp_to_set > 72:
             temp_to_set = 72
 
@@ -254,4 +258,3 @@ def initRoutes(app):
             return "at-work-mode-furnace"
         else:
             return "at-work-mode-ac"
-

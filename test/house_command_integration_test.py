@@ -12,6 +12,17 @@ class HouseCommandIntegrationTestCase(LiveServerTestCase):
     def create_app(self):
         return buildTestServer()
 
+    def setUp(self):
+        requests.get(thermostatUrl + '/countGETMessages')  # resets count to zero so each test can be isolated from others
+
+    def assertNoInteractionsWithThermostat(self):
+        response = requests.get(thermostatUrl + '/countGETMessages')
+        get_count = response.json()['count']
+        self.assertEqual(get_count, 0)
+
+        response = requests.get(thermostatUrl + '/lastThermostatStatePostRequest')
+        self.assertEqual(len(response.json().keys()), 0)
+
     def test_mock_service_is_up(self):
         response = requests.get(lightsUrl)
         self.assertEqual(response.status_code, 200)
@@ -40,6 +51,7 @@ class HouseCommandIntegrationTestCase(LiveServerTestCase):
         }
         received_data = requests.get(lightsUrl + '/lastPUTMessage/4').json()
         self.assertEqual(received_data, expected_sent_request)
+        self.assertNoInteractionsWithThermostat()
 
     def test_house_mode_lights_dim_sends_correct_request_to_hue(self):
         request_json = {'command': 'dim-lights'}
@@ -59,6 +71,7 @@ class HouseCommandIntegrationTestCase(LiveServerTestCase):
         }
         received_data = requests.get(lightsUrl + '/lastPUTMessage/4').json()
         self.assertEqual(received_data, expected_sent_request)
+        self.assertNoInteractionsWithThermostat()
 
     def test_house_mode_basement_dim_sends_correct_request_to_hue(self):
         request_json = {'command': 'basement-dim'}
@@ -90,6 +103,7 @@ class HouseCommandIntegrationTestCase(LiveServerTestCase):
         self.assertEqual(received_data, expected_dim_request)
         received_data = requests.get(lightsUrl + '/lastPUTMessage/10').json()
         self.assertEqual(received_data, expected_off_request)
+        self.assertNoInteractionsWithThermostat()
 
     def test_house_mode_basement_on_sends_correct_request_to_hue(self):
         request_json = {'command': 'basement-on'}
@@ -109,6 +123,7 @@ class HouseCommandIntegrationTestCase(LiveServerTestCase):
         }
         received_data = requests.get(lightsUrl + '/lastPUTMessage/8').json()
         self.assertEqual(received_data, expected_sent_request)
+        self.assertNoInteractionsWithThermostat()
 
     def test_house_mode_basement_off_sends_correct_request_to_hue(self):
         request_json = {'command': 'basement-off'}
@@ -128,6 +143,7 @@ class HouseCommandIntegrationTestCase(LiveServerTestCase):
         }
         received_data = requests.get(lightsUrl + '/lastPUTMessage/8').json()
         self.assertEqual(received_data, expected_sent_request)
+        self.assertNoInteractionsWithThermostat()
 
     def test_house_mode_bedroom_on_sends_correct_request_to_hue(self):
         request_json = {'command': 'bedroom-on'}
@@ -147,6 +163,7 @@ class HouseCommandIntegrationTestCase(LiveServerTestCase):
         }
         received_data = requests.get(lightsUrl + '/lastPUTMessage/5').json()
         self.assertEqual(received_data, expected_sent_request)
+        self.assertNoInteractionsWithThermostat()
 
     def test_house_mode_bedroom_off_sends_correct_request_to_hue(self):
         request_json = {'command': 'bedroom-off'}
@@ -166,6 +183,7 @@ class HouseCommandIntegrationTestCase(LiveServerTestCase):
         }
         received_data = requests.get(lightsUrl + '/lastPUTMessage/5').json()
         self.assertEqual(received_data, expected_sent_request)
+        self.assertNoInteractionsWithThermostat()
 
     def test_house_mode_fancy_light_on_sends_correct_request_to_hue(self):
         request_json = {'command': 'fancy-light-on'}
@@ -185,6 +203,7 @@ class HouseCommandIntegrationTestCase(LiveServerTestCase):
         }
         received_data = requests.get(lightsUrl + '/lastPUTMessage/13').json()
         self.assertEqual(received_data, expected_sent_request)
+        self.assertNoInteractionsWithThermostat()
 
     def test_house_mode_fancy_light_off_sends_correct_request_to_hue(self):
         request_json = {'command': 'fancy-light-off'}
@@ -204,6 +223,7 @@ class HouseCommandIntegrationTestCase(LiveServerTestCase):
         }
         received_data = requests.get(lightsUrl + '/lastPUTMessage/13').json()
         self.assertEqual(received_data, expected_sent_request)
+        self.assertNoInteractionsWithThermostat()
 
     def test_house_mode_plant_lights_on_sends_correct_request_to_hue(self):
         request_json = {'command': 'plant-lights-on'}
@@ -223,6 +243,7 @@ class HouseCommandIntegrationTestCase(LiveServerTestCase):
         }
         received_data = requests.get(lightsUrl + '/lastPUTMessage/14').json()
         self.assertEqual(received_data, expected_sent_request)
+        self.assertNoInteractionsWithThermostat()
 
     def test_house_mode_plant_lights_off_sends_correct_request_to_hue(self):
         request_json = {'command': 'plant-lights-off'}
@@ -242,6 +263,7 @@ class HouseCommandIntegrationTestCase(LiveServerTestCase):
         }
         received_data = requests.get(lightsUrl + '/lastPUTMessage/14').json()
         self.assertEqual(received_data, expected_sent_request)
+        self.assertNoInteractionsWithThermostat()
 
     def test_house_mode_lights_off_sends_correct_request_to_hue(self):
         request_json = {'command': 'lights-off'}
@@ -261,6 +283,7 @@ class HouseCommandIntegrationTestCase(LiveServerTestCase):
         }
         received_data = requests.get(lightsUrl + '/lastPUTMessage/4').json()
         self.assertEqual(received_data, expected_sent_request)
+        self.assertNoInteractionsWithThermostat()
 
     def test_house_mode_at_work_sends_correct_requests_from_furnace_mode(self):
         current_thermostat_readings = {
@@ -376,6 +399,7 @@ class HouseCommandIntegrationTestCase(LiveServerTestCase):
         }
         received_data = requests.get(lightsUrl + '/lastPUTMessage/3').json()
         self.assertEqual(received_data, expected_sent_request)
+        self.assertNoInteractionsWithThermostat()
 
     def test_house_mode_outside_lights_on_sends_correct_request_to_hue(self):
         request_json = {'command': 'outside-lights-on'}
@@ -395,6 +419,7 @@ class HouseCommandIntegrationTestCase(LiveServerTestCase):
         }
         received_data = requests.get(lightsUrl + '/lastPUTMessage/3').json()
         self.assertEqual(received_data, expected_sent_request)
+        self.assertNoInteractionsWithThermostat()
 
     def test_temp_down_command_with_AC_on_and_temp_more_than_2_above_min(self):
         current_thermostat_readings = {

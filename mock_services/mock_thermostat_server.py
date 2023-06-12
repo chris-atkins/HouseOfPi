@@ -65,8 +65,12 @@ def get_last_new_temp_check_request():
 def get_last_change_thermostat_state_post_request():
     global lastThermostatStatePostRequest
     response = {}
+
+    if lastThermostatStatePostRequest is None:
+        return json.dumps(response)
+
     for key in lastThermostatStatePostRequest.keys():
-        response[key] = float(lastThermostatStatePostRequest[key])
+        response[key] = float(lastThermostatStatePostRequest[key])  # to avoid strings being returned - this does seem to work for int values as well
 
     lastThermostatStatePostRequest = None
     return json.dumps(response)
