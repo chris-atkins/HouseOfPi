@@ -45,6 +45,6 @@ def get_last_change_lights_request_by_group(group):
 
 
 def build_mock_hue_server():
-    server_process = Process(target=lambda: app.run(debug=True, host='127.0.0.1', port=5555, use_reloader=False))
+    server_process = Process(target=lambda: app.run(debug=False, host='127.0.0.1', port=5555, use_reloader=False))
     server_process.start()
     return server_process

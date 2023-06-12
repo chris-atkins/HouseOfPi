@@ -52,20 +52,6 @@ def initRoutes(app):
         # print(app.root_path)  - this has been a problem in the past - print this in some other endpoint - this doesn't print here if the file is not found
         return send_from_directory(os.path.join(app.root_path, 'app/server/static'), 'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
-    # @app.route('/tstat', methods=['GET'])
-    # @authenticate(configuration=app.config)
-    # def get_thermostat_state():
-    #     url = app.config.get('THERMOSTAT_URL') + '/tstat'
-    #     response = requests.get(url)
-    #     return jsonify(response.json())
-    #
-    # @app.route('/tstat', methods=['POST'])
-    # @authenticate(configuration=app.config)
-    # def set_thermostat_state():
-    #     url = app.config.get('THERMOSTAT_URL') + '/tstat'
-    #     response = requests.post(url, json=request.get_json(force=True))
-    #     return jsonify(response.json())
-
     @app.route('/house/status', methods=['GET'])
     @authenticate(configuration=app.config)
     def get_house_status():
@@ -124,12 +110,15 @@ def initRoutes(app):
     def set_house():
         mode = request.get_json()['command']
 
+        thermostat_response = requests.get(app.config.get('THERMOSTAT_URL') + '/query/info')
+        thermostat_status = thermostat_response.json()
+
         if mode == "house-temp-down":
-            return handle_house_temp_down()
+            return handle_house_temp_down(thermostat_status)
         if mode == "house-temp-up":
-            return handle_house_temp_up()
+            return handle_house_temp_up(thermostat_status)
         if mode == "at-work-mode":
-            mode = translate_at_work_mode()
+            mode = translate_at_work_mode(thermostat_status)
 
         #TODO
         # if mode == "night-time"
@@ -137,47 +126,46 @@ def initRoutes(app):
         # if mode == "morning"
         #     return dostuff()
 
-        house_requests = create_requests_for_mode(mode=mode, app_config=app.config)
+        house_requests = create_requests_for_mode(mode=mode, app_config=app.config, thermostat_status=thermostat_status)
 
         for house_request in house_requests:
             if house_request.request_type == 'put':
                 requests.put(house_request.url, json=house_request.body)
             elif house_request.request_type == 'post':
                 requests.post(house_request.url, json=house_request.body)
+            elif house_request.request_type == 'form':
+                requests.post(house_request.url, data=house_request.body, headers={'Content-Type': 'application/x-www-form-urlencoded'})
             elif house_request.request_type == 'wemo':
                 for wemo in app.wemoDevices:
                     wemo.set_brightness(house_request.body)
 
         return jsonify({'status': 'success'})
 
-    def handle_house_temp_down():
-        url = app.config.get('THERMOSTAT_URL') + '/tstat'
-        current_thermostat_settings = requests.get(url).json()
-
-        house_mode = current_thermostat_settings["tmode"]
-        house_temp = current_thermostat_settings["temp"]
+    def handle_house_temp_down(thermostat_status):
+        house_mode = thermostat_status["mode"]
 
         if house_mode == 2:
-            return handle_temp_down_with_ac_on(house_temp)
+            return handle_temp_down_with_ac_on(thermostat_status)
         else:
-            return handle_temp_down_with_furnace_on(house_temp)
+            return handle_temp_down_with_furnace_on(thermostat_status)
 
-    def handle_temp_down_with_ac_on(house_temp):
+    def handle_temp_down_with_ac_on(thermostat_status):
+        house_temp = thermostat_status["spacetemp"]
         result = "success"
         if house_temp <= 67:
             result = "no-change"
 
-        temp_to_set = house_temp - 2
+        temp_to_set = round(house_temp + .0005 - 2)  # because the thermostat does this rounding itself, and we don't want to lie in our response - so if we round first, we control the behavior
         if temp_to_set < 67:
             temp_to_set = 67
 
         heat_request = {
-            't_cool': temp_to_set,
-            'tmode': 2,
-            'hold': 1
+            'cooltemp': temp_to_set,
+            'mode': 2,
+            'heattemp': thermostat_status['heattemp']
         }
-        url = app.config.get('THERMOSTAT_URL') + '/tstat'
-        requests.post(url, json=heat_request)
+        url = app.config.get('THERMOSTAT_URL') + '/control'
+        requests.post(url, data=heat_request, headers={'Content-Type': 'application/x-www-form-urlencoded'})
 
         response = {
             "command": "house-temp-down",
@@ -187,15 +175,16 @@ def initRoutes(app):
         }
         return jsonify(response)
 
-    def handle_temp_down_with_furnace_on(house_temp):
-        temp_to_set = house_temp - 2
+    def handle_temp_down_with_furnace_on(thermostat_status):
+        house_temp = thermostat_status["spacetemp"]
+        temp_to_set = round(house_temp + .0005 - 2)  # the adding .0005 is to deal with weirdness in float numbers
         heat_request = {
-            't_heat': temp_to_set,
-            'tmode': 1,
-            'hold': 1
+            'cooltemp': thermostat_status['cooltemp'],
+            'mode': 1,
+            'heattemp': temp_to_set
         }
-        url = app.config.get('THERMOSTAT_URL') + '/tstat'
-        requests.post(url, json=heat_request)
+        url = app.config.get('THERMOSTAT_URL') + '/control'
+        requests.post(url, data=heat_request, headers={'Content-Type': 'application/x-www-form-urlencoded'})
 
         response = {
             "command": "house-temp-down",
@@ -205,34 +194,32 @@ def initRoutes(app):
         }
         return jsonify(response)
 
-    def handle_house_temp_up():
-        url = app.config.get('THERMOSTAT_URL') + '/tstat'
-        current_thermostat_settings = requests.get(url).json()
-
-        house_mode = current_thermostat_settings["tmode"]
-        house_temp = current_thermostat_settings["temp"]
+    def handle_house_temp_up(thermostat_status):
+        house_mode = thermostat_status["mode"]
+        house_temp = thermostat_status["spacetemp"]
 
         if house_mode == 1:
-            return handle_temp_up_with_furnace_on(house_temp)
+            return handle_temp_up_with_furnace_on(thermostat_status)
         else:
-            return handle_temp_up_with_ac_on(house_temp)
+            return handle_temp_up_with_ac_on(thermostat_status)
 
-    def handle_temp_up_with_furnace_on(house_temp):
+    def handle_temp_up_with_furnace_on(thermostat_status):
+        house_temp = thermostat_status["spacetemp"]
         result = "success"
         if house_temp >= 72:
             result = "no-change"
 
-        temp_to_set = house_temp + 2
+        temp_to_set = round(house_temp - .0005 + 2) # round down so we only do a 1.5 increment, not 2.5
         if temp_to_set > 72:
             temp_to_set = 72
 
         heat_request = {
-            't_heat': temp_to_set,
-            'tmode': 1,
-            'hold': 1
+            'cooltemp': thermostat_status['cooltemp'],
+            'mode': 1,
+            'heattemp': temp_to_set
         }
-        url = app.config.get('THERMOSTAT_URL') + '/tstat'
-        requests.post(url, json=heat_request)
+        url = app.config.get('THERMOSTAT_URL') + '/control'
+        requests.post(url, data=heat_request, headers={'Content-Type': 'application/x-www-form-urlencoded'})
 
         response = {
             "command": "house-temp-up",
@@ -242,15 +229,16 @@ def initRoutes(app):
         }
         return jsonify(response)
 
-    def handle_temp_up_with_ac_on(house_temp):
-        temp_to_set = house_temp + 2
+    def handle_temp_up_with_ac_on(thermostat_status):
+        house_temp = thermostat_status["spacetemp"]
+        temp_to_set = round(house_temp - .0005 + 2)
         heat_request = {
-            't_cool': temp_to_set,
-            'tmode': 2,
-            'hold': 1
+            'cooltemp': temp_to_set,
+            'mode': 2,
+            'heattemp': thermostat_status['heattemp']
         }
-        url = app.config.get('THERMOSTAT_URL') + '/tstat'
-        requests.post(url, json=heat_request)
+        url = app.config.get('THERMOSTAT_URL') + '/control'
+        requests.post(url, data=heat_request, headers={'Content-Type': 'application/x-www-form-urlencoded'})
 
         response = {
             "command": "house-temp-up",
@@ -260,12 +248,8 @@ def initRoutes(app):
         }
         return jsonify(response)
 
-    def translate_at_work_mode():
-        url = app.config.get('THERMOSTAT_URL') + '/tstat'
-        current_thermostat_settings = requests.get(url).json()
-
-        house_mode = current_thermostat_settings["tmode"]
-
+    def translate_at_work_mode(thermostat_status):
+        house_mode = thermostat_status['mode']
         if house_mode == 1:
             return "at-work-mode-furnace"
         else:

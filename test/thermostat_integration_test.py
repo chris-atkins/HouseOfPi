@@ -10,7 +10,6 @@ class ThermostatIntegrationTestCase(LiveServerTestCase):
 
     def create_app(self):
         requests.get(thermostatUrl + '/countGETMessages', headers={'auth-secret': authenticationSecret}) #resets the count so previous tests don't interfere
-        requests.get(thermostatUrl + '/countNewGETMessages', headers={'auth-secret': authenticationSecret}) #resets the count so previous tests don't interfere
         return buildTestServer()
 
     def test_mock_service_is_up(self):
@@ -35,9 +34,9 @@ class ThermostatIntegrationTestCase(LiveServerTestCase):
 
         received_data = requests.get(thermostatUrl + '/lastThermostatStatePostRequest').json()
         self.assertEqual(len(received_data.keys()), 3)
-        self.assertEqual(received_data['heattemp'], "69.5")
-        self.assertEqual(received_data['cooltemp'], "33.45")
-        self.assertEqual(received_data['mode'], "2")
+        self.assertEqual(received_data['heattemp'], 69.5)
+        self.assertEqual(received_data['cooltemp'], 33.45)
+        self.assertEqual(received_data['mode'], 2)
 
     def test_set_temp_calls_thermostat_with_correct_values_heat_mode(self):
         current_thermostat_readings = {
@@ -56,9 +55,9 @@ class ThermostatIntegrationTestCase(LiveServerTestCase):
 
         received_data = requests.get(thermostatUrl + '/lastThermostatStatePostRequest').json()
         self.assertEqual(len(received_data.keys()), 3)
-        self.assertEqual(received_data['heattemp'], "72")
-        self.assertEqual(received_data['cooltemp'], "68")
-        self.assertEqual(received_data['mode'], "1")
+        self.assertEqual(received_data['heattemp'], 72)
+        self.assertEqual(received_data['cooltemp'], 68)
+        self.assertEqual(received_data['mode'], 1)
 
     def test_set_temp_calls_thermostat_with_correct_values_same_mode_from_heat(self):
         current_thermostat_readings = {
@@ -77,9 +76,9 @@ class ThermostatIntegrationTestCase(LiveServerTestCase):
 
         received_data = requests.get(thermostatUrl + '/lastThermostatStatePostRequest').json()
         self.assertEqual(len(received_data.keys()), 3)
-        self.assertEqual(received_data['heattemp'], "71")
-        self.assertEqual(received_data['cooltemp'], "68")
-        self.assertEqual(received_data['mode'], "1")
+        self.assertEqual(received_data['heattemp'], 71)
+        self.assertEqual(received_data['cooltemp'], 68)
+        self.assertEqual(received_data['mode'], 1)
 
     def test_set_temp_calls_thermostat_with_correct_values_same_mode_from_cool(self):
         current_thermostat_readings = {
@@ -98,9 +97,9 @@ class ThermostatIntegrationTestCase(LiveServerTestCase):
 
         received_data = requests.get(thermostatUrl + '/lastThermostatStatePostRequest').json()
         self.assertEqual(len(received_data.keys()), 3)
-        self.assertEqual(received_data['heattemp'], "69.5")
-        self.assertEqual(received_data['cooltemp'], "66")
-        self.assertEqual(received_data['mode'], "2")
+        self.assertEqual(received_data['heattemp'], 69.5)
+        self.assertEqual(received_data['cooltemp'], 66)
+        self.assertEqual(received_data['mode'], 2)
 
     def test_thermostat_get_endpoint_requires_authentication_header_with_secret(self):
         sent_data = {'a': 'b'}

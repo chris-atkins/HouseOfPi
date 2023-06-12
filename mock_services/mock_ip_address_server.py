@@ -20,6 +20,6 @@ def ip_address():
 
 
 def build_mock_ip_address_server():
-    server_process = Process(target=lambda: app.run(host='127.0.0.1', port=6234, debug=True, use_reloader=False))
+    server_process = Process(target=lambda: app.run(host='127.0.0.1', port=6234, debug=False, use_reloader=False))
     server_process.start()
     return server_process

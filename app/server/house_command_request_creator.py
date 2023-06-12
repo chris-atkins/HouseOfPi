@@ -6,7 +6,7 @@ class HouseRequest:
         self.request_type = request_type
 
 
-def create_requests_for_mode(mode, app_config):
+def create_requests_for_mode(mode, app_config, thermostat_status):
 
     if mode == 'lights-on':
         url = app_config.get('LIGHTS_URL') + group_path(group='4')
@@ -118,9 +118,9 @@ def create_requests_for_mode(mode, app_config):
         indoor_lights_body = build_light_request_body(on=False)
         indoor_lights_request = HouseRequest(other_lights_url, indoor_lights_body, 'put')
 
-        temperature_url = app_config.get('THERMOSTAT_URL') + '/tstat'
-        temperature_body = {'t_heat':64.0,'tmode':1,'hold':1}
-        temperature_request = HouseRequest(temperature_url, temperature_body, 'post')
+        temperature_url = app_config.get('THERMOSTAT_URL') + '/control'
+        temperature_body = {'heattemp': 64, 'mode': 1, 'cooltemp': thermostat_status['cooltemp']}
+        temperature_request = HouseRequest(temperature_url, temperature_body, 'form')
 
         return [indoor_lights_request, plant_light_request, temperature_request]
 
@@ -133,11 +133,12 @@ def create_requests_for_mode(mode, app_config):
         indoor_lights_body = build_light_request_body(on=False)
         indoor_lights_request = HouseRequest(other_lights_url, indoor_lights_body, 'put')
 
-        temperature_url = app_config.get('THERMOSTAT_URL') + '/tstat'
-        temperature_body = {'t_cool':70.0,'tmode':2,'hold':1}
-        temperature_request = HouseRequest(temperature_url, temperature_body, 'post')
+        temperature_url = app_config.get('THERMOSTAT_URL') + '/control'
+        temperature_body = {'heattemp': thermostat_status['heattemp'], 'mode': 2, 'cooltemp': 72}
+        temperature_request = HouseRequest(temperature_url, temperature_body, 'form')
 
         return [indoor_lights_request, plant_light_request, temperature_request]
+
 
 def group_path(group):
     return '/api/6b1abf1f6e7157cc3843ee8b668d32d/groups/' + group + '/action'
