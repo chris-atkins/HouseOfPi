@@ -12,6 +12,7 @@ from app.server.utils.endpoints import listEndpoints
 def initRoutes(app):
     
     hi_name = ''
+    TEMP_INCREMENT = 2
 
     @app.route('/')
     def hello_world():
@@ -160,7 +161,7 @@ def initRoutes(app):
         if house_temp <= 67:
             result = "no-change"
 
-        temp_to_set = round(house_temp + .0005 - 2)  # because the thermostat does this rounding itself, and we don't want to lie in our response - so if we round first, we control the behavior
+        temp_to_set = round(house_temp + .0005 - TEMP_INCREMENT)  # because the thermostat does this rounding itself, and we don't want to lie in our response - so if we round first, we control the behavior
         if temp_to_set < 67:
             temp_to_set = 67
 
@@ -182,7 +183,7 @@ def initRoutes(app):
 
     def handle_temp_down_with_furnace_on(thermostat_status):
         house_temp = thermostat_status["spacetemp"]
-        temp_to_set = round(house_temp + .0005 - 2)  # the adding .0005 is to deal with weirdness in float numbers
+        temp_to_set = round(house_temp + .0005 - TEMP_INCREMENT)  # the adding .0005 is to deal with weirdness in float numbers
         heat_request = {
             'cooltemp': thermostat_status['cooltemp'],
             'mode': 1,
@@ -213,7 +214,7 @@ def initRoutes(app):
         if house_temp >= 72:
             result = "no-change"
 
-        temp_to_set = round(house_temp - .0005 + 2)  # round down so we only do a 1.5 increment, not 2.5
+        temp_to_set = round(house_temp - .0005 + TEMP_INCREMENT)  # round down so we only do a 1.5 increment, not 2.5
         if temp_to_set > 72:
             temp_to_set = 72
 
@@ -235,7 +236,7 @@ def initRoutes(app):
 
     def handle_temp_up_with_ac_on(thermostat_status):
         house_temp = thermostat_status["spacetemp"]
-        temp_to_set = round(house_temp - .0005 + 2)
+        temp_to_set = round(house_temp - .0005 + TEMP_INCREMENT)
         heat_request = {
             'cooltemp': temp_to_set,
             'mode': 2,

@@ -21,9 +21,17 @@ env/bin/python -m pip install wheel
 env/bin/python -m pip install flask
 env/bin/python -m pip install requests
 env/bin/python -m pip install Flask-APScheduler
-env/bin/python -m pip install ifaddr==0.1.6
+if [ "$(uname)" != "Darwin" ]; then
+  env/bin/python -m pip install --no-index --find-links file:///home/pi/libs/ifaddr-0.1.6-py3-none-any.whl --trusted-host file:///home/pi/libs/ifaddr-0.1.6-py3-none-any.whl ifaddr==0.1.6
+else
+  env/bin/python -m pip install ifaddr==0.1.6
+fi
 env/bin/python -m pip install lxml
-env/bin/python -m pip install pywemo
+if [ "$(uname)" != "Darwin" ]; then
+  env/bin/python -m pip install --no-index --find-links file:///home/pi/libs/pywemo-0.4.46-py2.py3-none-any.whl --trusted-host file:///home/pi/libs/pywemo-0.4.46-py2.py3-none-any.whl pywemo
+else
+  env/bin/python -m pip install pywemo
+fi
 
 
 if [ "$(uname)" != "Darwin" ]; then
