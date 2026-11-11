@@ -3,12 +3,12 @@ import os
 from app.server.server import Server
 from app.server.api import initRoutes
 from app.server.scheduled_jobs import init_scheduled_jobs
+from app.server.server_options import server_options_from_env
 from app.hardware.house_of_pi import HouseOfPi
 from app.hardware.gpio_factory import GPIOFactory
 import pywemo
 
-debugOn = os.environ.get('PYTHON_DEBUG_ON')
-sslOn = os.environ.get('PYTHON_SSL_ON')
+options = server_options_from_env(os.environ)
 
 wemoDevices = pywemo.discover_devices()
 gpioFactory = GPIOFactory()
@@ -27,15 +27,6 @@ app.config.update(dict(
 initRoutes(app)
 init_scheduled_jobs(app.config)
 
-if debugOn is not None and (debugOn.lower() == 'true' or debugOn.lower() == 'yes'):
-    print('STARTING SERVER IN DEBUG MODE')
-    app.run(host='0.0.0.0', port=5000, debug=True)
-
-elif sslOn is not None and (sslOn.lower() == 'true' or sslOn.lower() == 'yes'):
-    print('STARTING SERVER WITH SSL ENABLED')
-    context = ('cert.crt', 'key.key')
-    app.run(host='0.0.0.0', port=5000, ssl_context=context, debug=False)
-
-else:
-    print('STARTING SERVER WITH NO SSL')
-    app.run(host='0.0.0.0', port=5000, debug=False)
+print('STARTING SERVER on {}:{} (ssl={}, debug={})'.format(
+    options.host, options.port, options.ssl_context is not None, options.debug))
+app.run(host=options.host, port=options.port, ssl_context=options.ssl_context, debug=options.debug)
