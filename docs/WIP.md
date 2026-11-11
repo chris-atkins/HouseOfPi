@@ -1,6 +1,6 @@
 # Work in progress
 
-## Current: idle clients freezing the Pi web server (2026-11-11)
+## Done: idle clients freezing the Pi web server (2026-11-11)
 
 **Symptom:** Alexa often spins about 30s, then says "the requested skill did not provide a
 valid response". A redeploy of the Pi app makes it go away for a while.
@@ -23,15 +23,18 @@ an internet scanner, or a MyHouse connection queued while the app was already st
 - MyHouse: Alexa answers "couldn't reach the house" only when the command certainly
   didn't run. Otherwise it says "may still have worked".
 
-**Status:**
+**Status: done, cut over on 2026-11-11 at 23:41 UTC.**
 - [x] Code: HouseOfPi (119 tests) and MyHouse (267 tests) are committed, reviewed and deployed.
-- [ ] Cutover on the Pi: runbook steps 3–6 need sudo, so the user runs them.
-- [ ] Verify in the real thing:
-  - stall test PASS against the Pi
-  - authenticated requests go through nginx
-  - Alexa lights and temperature commands work
-  - failure modes: Flask down gives a 502 and "couldn't reach the house"
-  - MyHouse scheduled jobs log again
+- [x] Cutover: nginx 1.26.3 is enabled on :5000 and Flask is on 127.0.0.1:5001. The old
+      settings are backed up at `~/house-env/env-vars.sh.pre-nginx` on the Pi.
+- [x] Verified in the real thing:
+  - the stall test, which FAILED against the Pi earlier the same day, PASSES (3 idle
+    clients dropped after ~10s, every probe 200)
+  - the served cert is unchanged (SHA256 F6:02:D3…)
+  - MyHouse scheduled jobs and Alexa lights/temperature commands work through nginx
+  - with Flask stopped, nginx returns a 502 and Alexa says "Sorry, I couldn't reach the
+    house" immediately; a scheduled job hit the same 502, logged it and kept running
+  - slowest real `/house/command` so far: 1.26s (`urt=` in the nginx access log)
 
 ## Follow-ups (most important first)
 1. Timeouts on the Pi's own `requests` calls (thermostat, Hue, WeMo, MyHouse) in
