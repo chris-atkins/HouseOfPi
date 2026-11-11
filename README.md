@@ -12,7 +12,8 @@ nginx terminates TLS on port 5000 and proxies to the app on `127.0.0.1:5001`. Th
 setup is manual (it is not in the Jenkins jobs) and is documented in
 [deploy/nginx/README.md](deploy/nginx/README.md). The app reads where to listen from
 `PYTHON_HOST`, `PYTHON_PORT`, `PYTHON_SSL_ON` and `PYTHON_DEBUG_ON`; see
-`app/server/server_options.py`.
+`app/server/server_options.py`. Debug mode no longer forces plain HTTP:
+`PYTHON_SSL_ON` applies in debug mode too.
 
 ## Running the tests locally (macOS)
 

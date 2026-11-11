@@ -12,11 +12,15 @@ connections after client_header_timeout.
 
 Stdlib only, so it runs anywhere:
     python3 util-scripts/stall_test.py https://192.168.1.30:5000/
-    python3 util-scripts/stall_test.py https://192.168.1.30:5000/ --idle 3 --hold 30
+    python3 util-scripts/stall_test.py https://192.168.1.30:5000/ --idle 3 --hold 20
+
+With --hold of at least 15s, PASS also requires the server to have dropped every
+idle connection by the end (nginx's client_header_timeout is 10s).
 
 Exit code 0 = PASS, 1 = FAIL.
 """
 import argparse
+import http.client
 import socket
 import ssl
 import sys
@@ -25,9 +29,14 @@ import urllib.error
 import urllib.request
 from urllib.parse import urlsplit
 
+# Long enough for nginx's 10s client_header_timeout to have dropped the idle clients.
+HOLD_SECONDS_THAT_REQUIRE_IDLE_DROPPED = 15
 
-def open_idle_connections(host, port, count):
-    return [socket.create_connection((host, port), timeout=5) for _ in range(count)]
+
+def open_idle_connections(host, port, count, into):
+    """Appends to `into` as it goes, so the caller can close any that opened before a failure."""
+    for _ in range(count):
+        into.append(socket.create_connection((host, port), timeout=5))
 
 
 def count_closed_by_server(connections):
@@ -55,7 +64,7 @@ def probe(url, timeout):
             return 200 <= response.status < 300, f'HTTP {response.status} in {time.monotonic() - started:.2f}s'
     except urllib.error.HTTPError as e:
         return False, f'HTTP {e.code} in {time.monotonic() - started:.2f}s'
-    except (OSError, urllib.error.URLError) as e:
+    except (OSError, urllib.error.URLError, http.client.HTTPException) as e:
         return False, f'{type(e).__name__}: {e} after {time.monotonic() - started:.2f}s'
 
 
@@ -68,6 +77,10 @@ def main(argv=None):
     args = parser.parse_args(argv)
     if args.idle < 1:
         parser.error('--idle must be at least 1')
+    if args.timeout <= 0:
+        parser.error('--timeout must be greater than 0')
+    if args.hold < 0:
+        parser.error('--hold must not be negative')
 
     target = urlsplit(args.url)
     port = target.port or (443 if target.scheme == 'https' else 80)
@@ -78,26 +91,40 @@ def main(argv=None):
         print('FAIL: server is not healthy even without idle clients; fix that first')
         return 1
 
-    idle = open_idle_connections(target.hostname, port, args.idle)
-    print(f'opened {len(idle)} idle connection(s) to {target.hostname}:{port}')
+    idle = []
     try:
+        try:
+            open_idle_connections(target.hostname, port, args.idle, into=idle)
+        except OSError as e:
+            print(f'FAIL: could only open {len(idle)}/{args.idle} idle connections: {type(e).__name__}: {e}')
+            return 1
+        print(f'opened {len(idle)} idle connection(s) to {target.hostname}:{port}')
         time.sleep(1)  # let the server accept them before probing
-        all_ok = True
+        probes_ok = True
+        closed = 0
         deadline = time.monotonic() + args.hold
         while True:
             ok, description = probe(args.url, args.timeout)
-            all_ok = all_ok and ok
-            print(f'  probe with idle clients open: {description}  '
-                  f'(idle closed by server: {count_closed_by_server(idle)}/{len(idle)})')
-            if time.monotonic() >= deadline:
+            probes_ok = probes_ok and ok
+            closed = count_closed_by_server(idle)
+            print(f'  probe with idle clients open: {description}  (idle closed by server: {closed}/{len(idle)})')
+            remaining = deadline - time.monotonic()
+            if remaining <= 0:
                 break
-            time.sleep(5)
+            time.sleep(min(5, remaining))
     finally:
         for conn in idle:
             conn.close()
 
-    print('PASS' if all_ok else 'FAIL: idle clients blocked normal requests')
-    return 0 if all_ok else 1
+    if not probes_ok:
+        print('FAIL: idle clients blocked normal requests')
+        return 1
+    if args.hold >= HOLD_SECONDS_THAT_REQUIRE_IDLE_DROPPED and closed < len(idle):
+        print(f'FAIL: requests worked, but the server still held {len(idle) - closed} idle connection(s) '
+              f'after {args.hold:g}s (expected nginx to drop them after ~10s)')
+        return 1
+    print('PASS')
+    return 0
 
 
 if __name__ == '__main__':

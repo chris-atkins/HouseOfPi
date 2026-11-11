@@ -1,3 +1,4 @@
+import re
 from dataclasses import dataclass
 from typing import Mapping, Optional, Tuple
 
@@ -18,7 +19,7 @@ class ServerOptions:
 
 def server_options_from_env(environ: Mapping[str, str]) -> ServerOptions:
     return ServerOptions(
-        host=environ.get('PYTHON_HOST') or DEFAULT_HOST,
+        host=(environ.get('PYTHON_HOST') or '').strip() or DEFAULT_HOST,
         port=_parse_port(environ.get('PYTHON_PORT')),
         ssl_context=SSL_CONTEXT if _is_on(environ.get('PYTHON_SSL_ON')) else None,
         debug=_is_on(environ.get('PYTHON_DEBUG_ON')),
@@ -26,16 +27,16 @@ def server_options_from_env(environ: Mapping[str, str]) -> ServerOptions:
 
 
 def _is_on(value: Optional[str]) -> bool:
-    return value is not None and value.lower() in ('true', 'yes')
+    return value is not None and value.strip().lower() in ('true', 'yes')
 
 
 def _parse_port(value: Optional[str]) -> int:
     if value is None or value.strip() == '':
         return DEFAULT_PORT
-    try:
-        port = int(value)
-    except ValueError:
+    # Plain ASCII digits only: int() would also accept '+5001', '5_001' and non-ASCII digits.
+    if not re.fullmatch(r'[0-9]+', value.strip()):
         raise ValueError(f'PYTHON_PORT must be an integer, got {value!r}')
+    port = int(value)
     if not 1 <= port <= 65535:
         raise ValueError(f'PYTHON_PORT must be between 1 and 65535, got {port}')
     return port

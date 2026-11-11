@@ -27,6 +27,7 @@ app.config.update(dict(
 initRoutes(app)
 init_scheduled_jobs(app.config)
 
-print('STARTING SERVER on {}:{} (ssl={}, debug={})'.format(
-    options.host, options.port, options.ssl_context is not None, options.debug))
+# flush: stdout is redirected to log.txt by the deploy, and the runbook checks for this line.
+print(f'STARTING SERVER on {options.host}:{options.port} '
+      f'(ssl={options.ssl_context is not None}, debug={options.debug})', flush=True)
 app.run(host=options.host, port=options.port, ssl_context=options.ssl_context, debug=options.debug)

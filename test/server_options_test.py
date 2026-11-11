@@ -6,7 +6,7 @@ from app.server.server_options import ServerOptions, server_options_from_env, SS
 
 class ServerOptionsFromEnvTest(unittest.TestCase):
 
-    def test_defaults_match_the_historical_direct_tls_setup(self):
+    def test_defaults_without_any_environment(self):
         options = server_options_from_env({})
         self.assertEqual(options, ServerOptions(host='0.0.0.0', port=5000, ssl_context=None, debug=False))
 
@@ -34,6 +34,31 @@ class ServerOptionsFromEnvTest(unittest.TestCase):
     def test_port_above_range_is_rejected(self):
         with self.assertRaisesRegex(ValueError, 'PYTHON_PORT'):
             server_options_from_env({'PYTHON_PORT': '65536'})
+
+    def test_port_at_lower_boundary_is_accepted(self):
+        self.assertEqual(server_options_from_env({'PYTHON_PORT': '1'}).port, 1)
+
+    def test_ports_python_int_would_quietly_accept_are_rejected(self):
+        for value in ['-1', '+5001', '5_001', '5001.0', '\u0665\u0660\u0660\u0661', '50 01']:
+            with self.subTest(value=value):
+                with self.assertRaisesRegex(ValueError, 'PYTHON_PORT'):
+                    server_options_from_env({'PYTHON_PORT': value})
+
+    def test_whitespace_only_host_falls_back_to_default(self):
+        self.assertEqual(server_options_from_env({'PYTHON_HOST': '  '}).host, '0.0.0.0')
+
+    def test_host_whitespace_is_stripped(self):
+        self.assertEqual(server_options_from_env({'PYTHON_HOST': ' 127.0.0.1\n'}).host, '127.0.0.1')
+
+    def test_whitespace_around_booleans_is_ignored(self):
+        options = server_options_from_env({'PYTHON_SSL_ON': ' true ', 'PYTHON_DEBUG_ON': 'yes\n'})
+        self.assertEqual(options.ssl_context, SSL_CONTEXT)
+        self.assertTrue(options.debug)
+
+    def test_bad_port_error_does_not_chain_the_internal_parse_error(self):
+        with self.assertRaises(ValueError) as raised:
+            server_options_from_env({'PYTHON_PORT': 'abc'})
+        self.assertIsNone(raised.exception.__context__)
 
     def test_port_at_upper_boundary_is_accepted(self):
         self.assertEqual(server_options_from_env({'PYTHON_PORT': '65535'}).port, 65535)

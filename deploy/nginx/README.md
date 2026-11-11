@@ -59,27 +59,30 @@ Commands with `sudo` need the pi user's password. Run them in an SSH session on 
    scp deploy/nginx/houseofpi.conf pi@192.168.1.30:~/houseofpi.conf
    ```
 
-3. **Install nginx and the site.** Debian starts nginx on install with its default
-   site on :80; we remove that site and stop nginx until the cutover.
+3. **Install nginx and the site.** Debian enables and starts nginx on install, with its
+   default site on :80. We remove that site, then stop *and disable* nginx until the
+   cutover. If it were only stopped, a reboot before step 6 would start it on :5000,
+   and the next deploy, still on the old settings, couldn't bind.
    ```sh
    sudo apt install -y nginx
    sudo cp ~/houseofpi.conf /etc/nginx/sites-available/houseofpi
    sudo ln -sf /etc/nginx/sites-available/houseofpi /etc/nginx/sites-enabled/houseofpi
    sudo rm -f /etc/nginx/sites-enabled/default
-   sudo systemctl stop nginx
+   sudo systemctl disable --now nginx
    ```
 
 4. **Check before any downtime.** This checks that the cert and key parse and match,
    without binding port 5000:
    ```sh
    sudo nginx -t
-   sudo crontab -l          # nothing should start run.py at boot
+   # Nothing should start run.py at boot:
+   sudo crontab -l; crontab -l; systemctl list-unit-files | grep -iE 'house|pi-app'
    openssl x509 -noout -fingerprint -sha256 -in ~/certs/server.csr
    ```
    The fingerprint must be the cert MyHouse's truststore pins. Compare it with what
    the app serves today:
    ```sh
-   openssl s_client -connect localhost:5000 </dev/null 2>/dev/null | openssl x509 -noout -fingerprint -sha256
+   openssl s_client -connect 127.0.0.1:5000 </dev/null 2>/dev/null | openssl x509 -noout -fingerprint -sha256
    ```
    This only works while the app still serves TLS itself.
 
@@ -90,8 +93,10 @@ Commands with `sudo` need the pi user's password. Run them in an SSH session on 
    export PYTHON_HOST=127.0.0.1
    export PYTHON_PORT=5001
    ```
-   Then run Jenkins **MH2.1-Deploy.HouseOfPi**. Its log should show
-   `STARTING SERVER on 127.0.0.1:5001 (ssl=False, debug=False)` in `~/HouseOfPi/log.txt`.
+   Then run Jenkins **MH2.1-Deploy.HouseOfPi**. The job reports SUCCESS even when steps
+   fail, so check the Pi itself. `~/HouseOfPi/log.txt` should show
+   `STARTING SERVER on 127.0.0.1:5001 (ssl=False, debug=False)`, and
+   `sudo ss -ltnp '( sport = :5001 )'` should show python listening.
 
 6. **Start nginx on 5000**, enabled so it comes back after a reboot:
    ```sh
@@ -112,7 +117,7 @@ reaches 3/3 after about 10s.
 On the Pi:
 ```sh
 systemctl is-enabled nginx                     # enabled
-ss -ltn '( sport = :5000 or sport = :5001 )'   # 0.0.0.0:5000 (nginx), 127.0.0.1:5001 (python)
+sudo ss -ltnp '( sport = :5000 or sport = :5001 )'   # 0.0.0.0:5000 nginx, 127.0.0.1:5001 python
 tail -f /var/log/nginx/houseofpi.access.log    # rt= total time, urt= time spent in Flask
 ```
 Then ask Alexa for something (lights, a temperature check).
@@ -126,10 +131,19 @@ port, Flask fails to bind, and the only sign is in `~/HouseOfPi/log.txt`.
 2. In `~/house-env/env-vars.sh`, set `export PYTHON_SSL_ON=true` and delete the
    `PYTHON_HOST` / `PYTHON_PORT` lines.
 3. Run Jenkins MH2.1.
+4. Verify on the Pi. MH2.1 reports SUCCESS regardless, so don't rely on it.
+   ```sh
+   grep STARTING ~/HouseOfPi/log.txt              # 0.0.0.0:5000 (ssl=True, ...)
+   sudo ss -ltnp '( sport = :5000 )'               # python, not nginx
+   curl -sk https://127.0.0.1:5000/               # Hi there!
+   ```
+   Remember that this brings back the idle-client freeze nginx was protecting against.
 
 ## Maintenance
 
-- **Cert rotation.** After replacing `~/certs/server.csr` / `server.key`, run
+- **Cert rotation.** nginx keeps serving the old cert until it's reloaded, and the
+  Jenkins deploy can't do that for you. Skip this and MyHouse, now pinning the new cert,
+  fails every call. After replacing `~/certs/server.csr` / `server.key`, run
   `sudo nginx -t && sudo systemctl reload nginx`. The other rotation steps are
   unchanged (new truststore to CI-2, rebuild MyHouse). The deploy still copies the
   cert into `~/HouseOfPi` too; that copy is unused while `PYTHON_SSL_ON=false`.
