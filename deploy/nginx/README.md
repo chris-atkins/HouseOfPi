@@ -49,22 +49,27 @@ The outside contract does not change:
 
 Commands with `sudo` need the pi user's password. Run them in an SSH session on the Pi.
 
-1. **Deploy the app as usual** (Jenkins MH1.1 → MH2.1), so this repo is on the Pi
-   at `~/HouseOfPi`.
+1. **Deploy the app as usual** (Jenkins MH1.1 → MH2.1), so the Pi runs a version
+   of `run.py` that reads `PYTHON_HOST` / `PYTHON_PORT`.
 
-2. **Install nginx and the site.** Debian starts nginx on install with its default
+2. **Copy the config to the Pi.** The Jenkins deploy only copies `app/`,
+   `env-setup/`, `util-scripts/` and a few files, not `deploy/`. From a machine
+   with this repo:
+   ```sh
+   scp deploy/nginx/houseofpi.conf pi@192.168.1.30:~/houseofpi.conf
+   ```
+
+3. **Install nginx and the site.** Debian starts nginx on install with its default
    site on :80; we remove that site and stop nginx until the cutover.
    ```sh
    sudo apt install -y nginx
-   sudo cp ~/HouseOfPi/deploy/nginx/houseofpi.conf /etc/nginx/sites-available/houseofpi
+   sudo cp ~/houseofpi.conf /etc/nginx/sites-available/houseofpi
    sudo ln -sf /etc/nginx/sites-available/houseofpi /etc/nginx/sites-enabled/houseofpi
    sudo rm -f /etc/nginx/sites-enabled/default
    sudo systemctl stop nginx
    ```
-   Copy the file rather than symlinking into `~/HouseOfPi`: the deploy wipes that
-   directory.
 
-3. **Check before any downtime.** This checks that the cert and key parse and match,
+4. **Check before any downtime.** This checks that the cert and key parse and match,
    without binding port 5000:
    ```sh
    sudo nginx -t
@@ -78,7 +83,7 @@ Commands with `sudo` need the pi user's password. Run them in an SSH session on 
    ```
    This only works while the app still serves TLS itself.
 
-4. **Move Flask to localhost without TLS.** Edit `~/house-env/env-vars.sh`. Keep the
+5. **Move Flask to localhost without TLS.** Edit `~/house-env/env-vars.sh`. Keep the
    `export`s; the deploy `source`s this file:
    ```sh
    export PYTHON_SSL_ON=false
@@ -88,11 +93,11 @@ Commands with `sudo` need the pi user's password. Run them in an SSH session on 
    Then run Jenkins **MH2.1-Deploy.HouseOfPi**. Its log should show
    `STARTING SERVER on 127.0.0.1:5001 (ssl=False, debug=False)` in `~/HouseOfPi/log.txt`.
 
-5. **Start nginx on 5000**, enabled so it comes back after a reboot:
+6. **Start nginx on 5000**, enabled so it comes back after a reboot:
    ```sh
    sudo systemctl enable --now nginx
    ```
-   The app is unreachable between step 4's deploy and this step, which takes seconds.
+   The app is unreachable between step 5's deploy and this step, which takes seconds.
 
 ## Verify
 
@@ -128,8 +133,9 @@ port, Flask fails to bind, and the only sign is in `~/HouseOfPi/log.txt`.
   `sudo nginx -t && sudo systemctl reload nginx`. The other rotation steps are
   unchanged (new truststore to CI-2, rebuild MyHouse). The deploy still copies the
   cert into `~/HouseOfPi` too; that copy is unused while `PYTHON_SSL_ON=false`.
-- **Config change.** Edit `deploy/nginx/houseofpi.conf` here, commit, deploy, then
-  repeat the `cp` from step 2 and `sudo nginx -t && sudo systemctl reload nginx`.
+- **Config change.** Edit `deploy/nginx/houseofpi.conf` here and commit. Then repeat
+  the `scp` (step 2) and the `cp` (step 3), and run
+  `sudo nginx -t && sudo systemctl reload nginx`.
 - **Logs.** Debian's `/etc/logrotate.d/nginx` rotates `/var/log/nginx/*.log` daily
   and keeps 14 compressed copies, so they don't grow without bound.
 - **Timing data.** `rt=` / `urt=` in the access log is what MyHouse's client
