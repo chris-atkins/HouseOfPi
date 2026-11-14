@@ -49,7 +49,7 @@ The outside contract does not change:
 
 Commands with `sudo` need the pi user's password. Run them in an SSH session on the Pi.
 
-1. **Deploy the app as usual** (Jenkins MH1.1 → MH2.1), so the Pi runs a version
+1. **Deploy the app as usual** (the `house-of-pi` Jenkins job), so the Pi runs a version
    of `run.py` that reads `PYTHON_HOST` / `PYTHON_PORT`.
 
 2. **Copy the config to the Pi.** The Jenkins deploy only copies `app/`,
@@ -93,8 +93,8 @@ Commands with `sudo` need the pi user's password. Run them in an SSH session on 
    export PYTHON_HOST=127.0.0.1
    export PYTHON_PORT=5001
    ```
-   Then run Jenkins **MH2.1-Deploy.HouseOfPi**. The job reports SUCCESS even when steps
-   fail, so check the Pi itself. `~/HouseOfPi/log.txt` should show
+   Then run the `house-of-pi` Jenkins job. It fails if the app doesn't answer on the
+   new address, but check the Pi itself too. `~/HouseOfPi/log.txt` should show
    `STARTING SERVER on 127.0.0.1:5001 (ssl=False, debug=False)`, and
    `sudo ss -ltnp '( sport = :5001 )'` should show python listening.
 
@@ -130,8 +130,8 @@ port, Flask fails to bind, and the only sign is in `~/HouseOfPi/log.txt`.
 1. `sudo systemctl disable --now nginx`
 2. In `~/house-env/env-vars.sh`, set `export PYTHON_SSL_ON=true` and delete the
    `PYTHON_HOST` / `PYTHON_PORT` lines.
-3. Run Jenkins MH2.1.
-4. Verify on the Pi. MH2.1 reports SUCCESS regardless, so don't rely on it.
+3. Run the `house-of-pi` Jenkins job.
+4. Verify on the Pi:
    ```sh
    grep STARTING ~/HouseOfPi/log.txt              # 0.0.0.0:5000 (ssl=True, ...)
    sudo ss -ltnp '( sport = :5000 )'               # python, not nginx
@@ -145,7 +145,8 @@ port, Flask fails to bind, and the only sign is in `~/HouseOfPi/log.txt`.
   Jenkins deploy can't do that for you. Skip this and MyHouse, now pinning the new cert,
   fails every call. After replacing `~/certs/server.csr` / `server.key`, run
   `sudo nginx -t && sudo systemctl reload nginx`. The other rotation steps are
-  unchanged (new truststore to CI-2, rebuild MyHouse). The deploy still copies the
+  unchanged (the new truststore goes in the `truststore` key of the `my-house-backend-files`
+  Secret in the cluster; then restart my-house-backend). The deploy still copies the
   cert into `~/HouseOfPi` too; that copy is unused while `PYTHON_SSL_ON=false`.
 - **Config change.** Edit `deploy/nginx/houseofpi.conf` here and commit. Then repeat
   the `scp` (step 2) and the `cp` (step 3), and run
