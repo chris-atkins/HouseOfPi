@@ -1,5 +1,19 @@
 # Work in progress
 
+## Done: deploys move to the new Jenkins, ci-3 (2026-11-14)
+
+The `house-of-pi` job on ci-3 replaces CI-2's MH1.1 and MH2.1 (now disabled). It tests in
+`python:3.13-trixie` and deploys with `deploy/deploy-to-pi.sh` and `deploy/pi-deploy.sh` (see the
+README's "Deploying"). First deploy on 2026-11-14 at 00:19 UTC: 119 tests passed, the app answered
+after an 89s gap, and lights and thermostat were checked by hand. ci-3's key is in
+`~/.ssh/authorized_keys`, limited to ci-3's address.
+
+Follow-ups:
+1. Change the `pi` password: the old CI-2 box logged in with it.
+2. Turn off password logins from the internet (keep them on the LAN).
+3. Prepare the new copy alongside the running one, then switch, to cut the ~90s daily gap.
+4. Pin the Python packages; each deploy installs the latest of each.
+
 ## Done: idle clients freezing the Pi web server (2026-11-11)
 
 **Symptom:** Alexa often spins about 30s, then says "the requested skill did not provide a
